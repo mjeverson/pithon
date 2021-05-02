@@ -2,7 +2,6 @@
 # For Python 3.x support change print -> print(..) and Tkinter to tkinter
 from tkinter import *
 import time
-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
 
 class alien(object):
      def __init__(self):
