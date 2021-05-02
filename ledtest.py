@@ -1,11 +1,11 @@
-from gpiozero import DigitalOutputDevice
+from gpiozero import PWMLED
 from time import sleep
 
-flame1 = DigitalOutputDevice(4)
+led = PWMLED(18)
 
 while True:
     print("looping")
-    flame1.on()
+    led.on()
     sleep(1)
-    flame1.off()
+    led.off()
     sleep(1)
