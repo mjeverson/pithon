@@ -2,9 +2,11 @@
 # SPDX-License-Identifier: MIT
 
 # Simple test for NeoPixels on Raspberry Pi
-import time
 import board
 import neopixel
+from adafruit_servokit import ServoKit
+import time
+kit = ServoKit(channels=16)
 
 
 # Choose an open pin connected to the Data In of the NeoPixel strip, i.e. board.D18
@@ -60,6 +62,7 @@ while True:
     # Uncomment this line if you have RGBW/GRBW NeoPixels
     pixels.fill((255, 0, 0, 0))
     pixels.show()
+    kit.servo[0].angle = 90
     time.sleep(1)
 
     # Comment this line out if you have RGBW/GRBW NeoPixels
@@ -74,6 +77,8 @@ while True:
     # Uncomment this line if you have RGBW/GRBW NeoPixels
     pixels.fill((0, 0, 255, 0))
     pixels.show()
+    kit.servo[0].angle = 0
     time.sleep(1)
 
     rainbow_cycle(0.001)  # rainbow cycle with 1ms delay per step
+
