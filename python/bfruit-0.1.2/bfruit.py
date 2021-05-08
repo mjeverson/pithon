@@ -747,7 +747,7 @@ if __name__ == "__main__":
         szam = szam + 4
         pygame.display.update()
     
-    starttime = time.clock()
+    starttime = time.perf_counter()
     
     while True:
         for event in pygame.event.get():
@@ -762,41 +762,41 @@ if __name__ == "__main__":
         screen.blit(point, (185, 180))
         screen.blit(point, (185, 210))
         screen.blit(point, (185, 240))
-        if time.clock() - starttime < 1:
+        if time.perf_counter() - starttime < 1:
             screen.blit(point, (185, 270))
-        if time.clock() - starttime < 1.2:
+        if time.perf_counter() - starttime < 1.2:
             screen.blit(point, (215, 150))
         screen.blit(point, (215, 180))
-        if time.clock() - starttime < 1.15:
+        if time.perf_counter() - starttime < 1.15:
             screen.blit(point, (215, 210))
-        if time.clock() - starttime < 1.2:
+        if time.perf_counter() - starttime < 1.2:
             screen.blit(point, (215, 240))
-        if time.clock() - starttime < 1.23:
+        if time.perf_counter() - starttime < 1.23:
             screen.blit(point, (215, 270))
-        if time.clock() - starttime < 1.18:
+        if time.perf_counter() - starttime < 1.18:
             screen.blit(point, (245, 150))
-        if time.clock() - starttime < 1.2:
+        if time.perf_counter() - starttime < 1.2:
             screen.blit(point, (245, 180))
         screen.blit(point, (245, 210))
-        if time.clock() - starttime < 1.43:
+        if time.perf_counter() - starttime < 1.43:
             screen.blit(point, (245, 240))
-        if time.clock() - starttime < 1.5:
+        if time.perf_counter() - starttime < 1.5:
             screen.blit(point, (245, 270))
         screen.blit(point, (275, 150))
         screen.blit(point, (275, 180))
         screen.blit(point, (275, 210))
         screen.blit(point, (275, 240))
-        if time.clock() - starttime < 1.22:
+        if time.perf_counter() - starttime < 1.22:
             screen.blit(point, (275, 270))
-        if time.clock() - starttime < 1.41:
+        if time.perf_counter() - starttime < 1.41:
             screen.blit(point, (305, 150))
-        if time.clock() - starttime < 1.34:
+        if time.perf_counter() - starttime < 1.34:
             screen.blit(point, (305, 180))
-        if time.clock() - starttime < 1.4:
+        if time.perf_counter() - starttime < 1.4:
             screen.blit(point, (305, 210))
-        if time.clock() - starttime < 1.36:
+        if time.perf_counter() - starttime < 1.36:
             screen.blit(point, (305, 240))
-        if time.clock() - starttime < 1.1:
+        if time.perf_counter() - starttime < 1.1:
             screen.blit(point, (305, 270))
         screen.blit(point, (335, 150))
         screen.blit(point, (335, 180))
@@ -804,44 +804,44 @@ if __name__ == "__main__":
         screen.blit(point, (335, 240))
         screen.blit(point, (335, 270))
         screen.blit(point, (365, 150))
-        if time.clock() - starttime < 1.13:
+        if time.perf_counter() - starttime < 1.13:
             screen.blit(point, (365, 180))
         screen.blit(point, (365, 210))
-        if time.clock() - starttime < 1.4:
+        if time.perf_counter() - starttime < 1.4:
             screen.blit(point, (365, 240))
         screen.blit(point, (365, 270))
         screen.blit(point, (395, 150))
-        if time.clock() - starttime < 1.31:
+        if time.perf_counter() - starttime < 1.31:
             screen.blit(point, (395, 180))
         screen.blit(point, (395, 210))
-        if time.clock() - starttime < 1.25:
+        if time.perf_counter() - starttime < 1.25:
             screen.blit(point, (395, 240))
         screen.blit(point, (395, 270))
-        if time.clock() - starttime < 1.43:
+        if time.perf_counter() - starttime < 1.43:
             screen.blit(point, (425, 150))
         screen.blit(point, (425, 180))
-        if time.clock() - starttime < 2.0:
+        if time.perf_counter() - starttime < 2.0:
             screen.blit(point, (425, 210))
         screen.blit(point, (425, 240))
-        if time.clock() - starttime < 2.4:
+        if time.perf_counter() - starttime < 2.4:
             screen.blit(point, (425, 270))
             
-        if time.clock() - starttime > 3:
+        if time.perf_counter() - starttime > 3:
             font = pygame.font.Font("data/LiberationSans-Regular.ttf", 25)
             text_surface = font.render("nXBalazs" , True, [255, 255, 255])
             screen.blit(text_surface, (190, 273))
-        if time.clock() - starttime > 3.5:
+        if time.perf_counter() - starttime > 3.5:
             font = pygame.font.Font("data/LiberationSans-Regular.ttf", 25)
             text_surface = font.render("games" , True, [255, 255, 255])
             screen.blit(text_surface, (280, 310))
-        if 5 > time.clock() - starttime > 4:
+        if 5 > time.perf_counter() - starttime > 4:
             szamsun = 0
             while szamsun < 100:
                 sun.set_alpha(szamsun)
                 screen.blit(sun, (0, 0))
                 szamsun = szamsun + 1
                 pygame.display.update()
-        if time.clock() - starttime > 5:
+        if time.perf_counter() - starttime > 5:
             plc = Menu()
     
     
