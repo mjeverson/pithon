@@ -4,6 +4,8 @@
   Designed for use with Arduino Mini pro 5V 16Hz && Associated Raspberry Pi 
 
   //todo(mje): Will we still need threads? Arduino mini pro threading?
+  // This sets everything up then goes into waiting-for-serial
+  // based on the code (loss, reset, victory-type) do all the things (in threads if necessary) and when done send a Done signal to the pi
 
  ****************************************************/
 
@@ -20,42 +22,17 @@
 #define SOL3 22
 #define SOL4 23
 
-//Speaker is on DAC0, or A21
-//#define MAX9744_I2CADDR 0x4B
-//AudioPlaySdWav playWav1;
-//AudioOutputAnalog audioOutput;
-//AudioConnection patchCord1(playWav1, 0, audioOutput, 0);
-
 // Valid output pins: //2-10, 14, 16-17, 20-23, 29-30, 35-38
 #define TENTACLE_SERVO 35
 #define COIN_SERVO 36
-//#define SAFETY_PIXEL 37
 #define PIXEL 38
 #define NUM_PIXELS 90
-// Adafruit_NeoPixel(number of pixels in strip, pin #, pixel type flags add as needed)
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(NUM_PIXELS, PIXEL, NEO_GRBW + NEO_KHZ800);
 
 PWMServo tentacleServo;
 PWMServo coinServo;  
 int tentacleServoPos = 0;
 int coinServoPos = 0;
-
-// screens 1 2 and 3 are on the spi1 busy (mosi 0, miso 1, sck 32)
-//#define TFT_DC 24
-//#define TFT_CS 25 
-//#define TFT_CS2 26
-//#define TFT_CS3 27
-
-// Sound SD card is on spo0 bus (mosi 11, miso 12, sck 13) 
-//#define MOSI1 0
-//#define MISO1 1
-//#define SCK1 32
-
-// Use soft SPI for TFTs, hardware for SPI
-//HX8357_t3 tft = HX8357_t3(TFT_CS, TFT_DC);
-//Adafruit_HX8357 tft = Adafruit_HX8357(TFT_CS, TFT_DC, MOSI1, SCK1, -1, MISO1);
-//Adafruit_HX8357 tft2 = Adafruit_HX8357(TFT_CS2, TFT_DC, MOSI1, SCK1, -1, MISO1);
-//Adafruit_HX8357 tft3 = Adafruit_HX8357(TFT_CS3, TFT_DC, MOSI1, SCK1, -1, MISO1);
 
 #define WINSTATE_NONE 0
 #define WINSTATE_NYAN 1
@@ -67,15 +44,6 @@ int coinServoPos = 0;
 #define WINSTATE_LOSS 7
 #define WINSTATE_SETH 8
 int winState, slot1_current, slot2_current, slot3_current; 
-//char* images[] = {"nyanf.bmp", "tentf.bmp", "coinf.bmp", "firef.bmp", "cheesef.bmp", "pinchyf.bmp", "sethf.bmp"};
-
-// Onboard Teensy 3.6 SD Slot
-//const uint8_t SD_CHIP_SELECT = SS;
-//const uint8_t SOUND_SD_CHIP_SELECT = 29;
-
-// Faster library for SDIO
-//SdFatSdioEX sd;
-//SdFat sd2;
 
 // Get this party started!
 void setup() {
@@ -83,25 +51,6 @@ void setup() {
   randomSeed(analogRead(A0));
   
   Serial.begin(9600);
-
-  // Sets up the TFT screens
-//  tft.begin(HX8357D);
-//  tft2.begin(HX8357D);
-//  tft3.begin(HX8357D);
-
-  // Prove the screens are on and accepting commands
-//  tft.fillScreen(HX8357_BLUE);
-//  tft2.fillScreen(HX8357_BLUE);
-//  tft3.fillScreen(HX8357_BLUE);
-
-  // Set up sound player
-//  Wire.begin(); 
-//  AudioMemory(64); //was 8
-
-  // Set up handle listener
-//  pinMode(HANDLE, INPUT_PULLUP);
-//  digitalWrite(HANDLE, HIGH);
-//  delay(500);
 
   // Set up solenoid
   pinMode(SOL1, OUTPUT);
@@ -115,88 +64,24 @@ void setup() {
 
   // Set up LEDs. Some default colour to indicate ready to go
   strip.begin();
-//  pinMode(SAFETY_PIXEL, OUTPUT);
 
-  // Initialize the SD card
-//  Serial.println("Initializing SD card...");
-//  uint32_t t = millis();
-//
-//  if (!sd.cardBegin()) {
-//    Serial.println("\nArt cardBegin failed");
-//    return;
-//  }
-//
-//  if (!sd.fsBegin()) {
-//    Serial.println("\nArt File System initialization failed.\n");
-//    return;
-//  }
-//
-//  // This didn't work when attached only to 5V power. All this was was the 3.3V & GND needed to connect directly to teensy & also to power supply ground 
-//  //todo: why does it need direct connection to power supply GND and teensy GND when both of those things are connected? probably because i need to connect the teensy gnd directly to the power supply ground
-//  if (!sd2.begin(SOUND_SD_CHIP_SELECT)) {
-//    Serial.println("\nSound cardBegin failed");
-//    return;
-//  }
-//
-//  t = millis() - t;
-//  
-//  Serial.println("\ninit time: ");
-//  Serial.print(t);
-  //End SD card init
-  
   // Initializes the state of the peripherals
   resetState();
-
-  // Initialize slot state.
-//  slot1_current = random(0,6);
-//  slot2_current = random(0,6);
-//  slot3_current = random(0,6);
-//  bmpDraw(images[slot1_current], 0, 0, tft);
-//  bmpDraw(images[slot2_current], 0, 0, tft2);
-//  bmpDraw(images[slot3_current], 0, 0, tft3);
-//
-//  delay(10);
 }
 
 void loop() {
   Serial.print("\nPull handle to begin slots!\n");
 
+//todo:wait until we get a code from the pi. 
+// Set the winstate based on that, then doWinState with some small changes, followed by "done"
+// There'll need to be an extra command for "dispense N coins"
 //  if(Serial.available()){
 //    doCoin();
 //    Serial.read();
 //  }
 
-  while (digitalRead(HANDLE)){
-    delay(10);
-  }
-
-  rollSlots();
-  doWinState();
-  resetState();
 }
 
-File audioFile;
-
-// Looping slot machine sound, intended to be run inside a thread and killed manually
-void playReelLoopThread(){
-  while(true){
-    if(!playWav1.isPlaying()){
-      if (audioFile){
-        audioFile.close();
-      }
-      
-      if(audioFile = sd2.open("reel16.wav")){
-        Serial.print("About to play reel!");
-        playWav1.play(audioFile);
-      } else {
-        Serial.print("problem opening sound file in loop");
-      }
-    }
-
-    //TODO: might not even need this?
-    threads.delay(10);
-  }
-}
 
 // Sets the slots rolling, picks an outcome and displays it
 // On rollSlots, we should iterate through 0-6 and set the slot to be whatever its current state is +1 (rolling over, so use %)
@@ -204,125 +89,118 @@ void playReelLoopThread(){
 // On a result, save the global state of the slots. 
 // keep rolling the first slot til it gets where it needs to go. Then the second, then the third. (don't update the global state)
 // OR just let the first slot start one or two early, then the second slot, then the third slot. let them roll a few times, then do it all again. Don't need global state
-void rollSlots(){  
-  // Start playing rolling sound
-  int playReelLoopThreadID = threads.addThread(playReelLoopThread);
-
-  // Calculate win state
-  int winRoll = random(1,100); 
-  
-  // Calcuate partial fail slot displays
-  int falseWinSlot, falseWinSlotOdd;
-    
-  do {
-    falseWinSlot = random(0,6);
-    falseWinSlotOdd = random(0,6);
-  } while (falseWinSlot == falseWinSlotOdd);
-  
-  int slot1_end, slot2_end, slot3_end;
-  
-  if (winRoll <= 10) {
-    // nyancat, 10% chance
-    winState = WINSTATE_NYAN;
-    slot1_end = slot2_end = slot3_end = 0;
-  } else if (winRoll <= 20){
-    // tentacle, 10% chance
-    winState = WINSTATE_TENTACLE;
-    slot1_end = slot2_end = slot3_end = 1;
-  } else if (winRoll <= 25) {
-    // coin, 5% chance
-    winState = WINSTATE_COIN;
-    slot1_end = slot2_end = slot3_end = 2;
-  } else if (winRoll <= 35) {
-    // fire, 10% chance
-    winState = WINSTATE_FIRE;
-    slot1_end = slot2_end = slot3_end = 3;
-  } else if (winRoll <= 45) {
-    // cheesy poofs, 10% chance
-    winState = WINSTATE_CHEESY;
-    slot1_end = slot2_end = slot3_end = 4;
-  } else if (winRoll <= 50){
-    // pinchy, 5% chance
-    winState = WINSTATE_PINCHY;
-    slot1_end = slot2_end = slot3_end = 5;
-  } else if (winRoll <= 52) {
-    //todo: seth win, 2% chance
-    winState = WINSTATE_SETH;
-    slot1_end = slot2_end = slot3_end = 6;
-  } else if (winRoll <= 62) {
-    // partial fail, 10% chance
-    winState = WINSTATE_LOSS;
-    slot1_end = slot2_end = falseWinSlot;
-    slot3_end = falseWinSlotOdd;
-  } else if (winRoll <= 72) {
-    // Partial fail, 10% chance
-    winState = WINSTATE_LOSS;
-    slot1_end = slot3_end = falseWinSlot;
-    slot2_end = falseWinSlotOdd;
-  }else if (winRoll <= 82) {
-    // Partial fail, 10% chance
-    winState = WINSTATE_LOSS;
-    slot2_end = slot3_end = falseWinSlot;
-    slot1_end = falseWinSlotOdd;
-  } else {
-    // Total fail, 18% chance
-    winState = WINSTATE_LOSS;
-    slot1_end = falseWinSlot;
-    slot2_end = falseWinSlotOdd;
-    slot3_end = random(0,6);
-  }
-
-  // new shorter rolling logic
-  int rollsBeforeStopping = 4;
-  int i = 0;
-
-  // Want to make sure we don't get a slot rolling the same thing twice, looks like it doesn't update
-  while(i < rollsBeforeStopping){
-    int slot1_new = slot1_current;
-    int slot2_new = slot2_current;
-    int slot3_new = slot3_current;
-    
-    while (slot1_new == slot1_current){
-      slot1_new = random(0,6);
-    }
-    
-    while (slot2_new == slot2_current){
-      slot2_new = random(0,6);
-    }
-
-    while (slot3_new == slot3_current){
-      slot3_new = random(0,6);
-    }
-
-    bmpDraw(images[slot1_new], 0, 0, tft);
-    bmpDraw(images[slot2_new], 0, 0, tft2);
-    bmpDraw(images[slot3_new], 0, 0, tft3);
-
-    slot1_current = slot1_new;
-    slot2_current = slot2_new;
-    slot3_current = slot3_new;
-
-    i++;
-  }
-
-  bmpDraw(images[slot1_end], 0, 0, tft);
-  bmpDraw(images[slot2_end], 0, 0, tft2);
-  bmpDraw(images[slot3_end], 0, 0, tft3);
-
-  slot1_current = slot1_end;
-  slot2_current = slot2_end;
-  slot3_current = slot3_end;
-
-  threads.kill(playReelLoopThreadID);
-
-  playSound("rstop16.wav");
-  delay(10);
-  
-  while(playWav1.isPlaying()){
-    Serial.println("Waiting for rstop16 audio to finish!");
-    delay(10);
-  }
-}
+//void rollSlots(){  
+//  // Start playing rolling sound
+//  int playReelLoopThreadID = threads.addThread(playReelLoopThread);
+//
+//  // Calculate win state
+//  int winRoll = random(1,100); 
+//  
+//  // Calcuate partial fail slot displays
+//  int falseWinSlot, falseWinSlotOdd;
+//    
+//  do {
+//    falseWinSlot = random(0,6);
+//    falseWinSlotOdd = random(0,6);
+//  } while (falseWinSlot == falseWinSlotOdd);
+//  
+//  int slot1_end, slot2_end, slot3_end;
+//  
+//  if (winRoll <= 10) {
+//    // nyancat, 10% chance
+//    winState = WINSTATE_NYAN;
+//    slot1_end = slot2_end = slot3_end = 0;
+//  } else if (winRoll <= 20){
+//    // tentacle, 10% chance
+//    winState = WINSTATE_TENTACLE;
+//    slot1_end = slot2_end = slot3_end = 1;
+//  } else if (winRoll <= 25) {
+//    // coin, 5% chance
+//    winState = WINSTATE_COIN;
+//    slot1_end = slot2_end = slot3_end = 2;
+//  } else if (winRoll <= 35) {
+//    // fire, 10% chance
+//    winState = WINSTATE_FIRE;
+//    slot1_end = slot2_end = slot3_end = 3;
+//  } else if (winRoll <= 45) {
+//    // cheesy poofs, 10% chance
+//    winState = WINSTATE_CHEESY;
+//    slot1_end = slot2_end = slot3_end = 4;
+//  } else if (winRoll <= 50){
+//    // pinchy, 5% chance
+//    winState = WINSTATE_PINCHY;
+//    slot1_end = slot2_end = slot3_end = 5;
+//  } else if (winRoll <= 52) {
+//    //todo: seth win, 2% chance
+//    winState = WINSTATE_SETH;
+//    slot1_end = slot2_end = slot3_end = 6;
+//  } else if (winRoll <= 62) {
+//    // partial fail, 10% chance
+//    winState = WINSTATE_LOSS;
+//    slot1_end = slot2_end = falseWinSlot;
+//    slot3_end = falseWinSlotOdd;
+//  } else if (winRoll <= 72) {
+//    // Partial fail, 10% chance
+//    winState = WINSTATE_LOSS;
+//    slot1_end = slot3_end = falseWinSlot;
+//    slot2_end = falseWinSlotOdd;
+//  }else if (winRoll <= 82) {
+//    // Partial fail, 10% chance
+//    winState = WINSTATE_LOSS;
+//    slot2_end = slot3_end = falseWinSlot;
+//    slot1_end = falseWinSlotOdd;
+//  } else {
+//    // Total fail, 18% chance
+//    winState = WINSTATE_LOSS;
+//    slot1_end = falseWinSlot;
+//    slot2_end = falseWinSlotOdd;
+//    slot3_end = random(0,6);
+//  }
+//
+//  // new shorter rolling logic
+//  int rollsBeforeStopping = 4;
+//  int i = 0;
+//
+//  // Want to make sure we don't get a slot rolling the same thing twice, looks like it doesn't update
+//  while(i < rollsBeforeStopping){
+//    int slot1_new = slot1_current;
+//    int slot2_new = slot2_current;
+//    int slot3_new = slot3_current;
+//    
+//    while (slot1_new == slot1_current){
+//      slot1_new = random(0,6);
+//    }
+//    
+//    while (slot2_new == slot2_current){
+//      slot2_new = random(0,6);
+//    }
+//
+//    while (slot3_new == slot3_current){
+//      slot3_new = random(0,6);
+//    }
+//
+//    bmpDraw(images[slot1_new], 0, 0, tft);
+//    bmpDraw(images[slot2_new], 0, 0, tft2);
+//    bmpDraw(images[slot3_new], 0, 0, tft3);
+//
+//    slot1_current = slot1_new;
+//    slot2_current = slot2_new;
+//    slot3_current = slot3_new;
+//
+//    i++;
+//  }
+//
+//  slot1_current = slot1_end;
+//  slot2_current = slot2_end;
+//  slot3_current = slot3_end;
+//
+//  delay(10);
+//  
+//  while(playWav1.isPlaying()){
+//    Serial.println("Waiting for rstop16 audio to finish!");
+//    delay(10);
+//  }
+//}
 
 void doWinState(){
   //based on win state do sounds, fire, etc.
@@ -335,7 +213,7 @@ void doWinState(){
       int lightThreadId = threads.addThread(doLights);
 
       // Sound: Nyancat. This occasionally gets skipped. Some weird timing thing? wait til it starts playing.
-      playSound("nyan16.wav");
+//      playSound("nyan16.wav");
 
       // Do the fire. Might need to swap to clock watching
       int fireThreadId = threads.addThread(doFire);
@@ -357,7 +235,7 @@ void doWinState(){
       doLights();
 
       // Sound: person screaming
-      playSound("scream16.wav");
+//      playSound("scream16.wav");
   
       // Wave the tentacle
       int tentacleThreadId = threads.addThread(doTentacle);
@@ -379,7 +257,7 @@ void doWinState(){
       doLights();
 
       //TODO: sound: mario 1up/coin
-      playSound("coin16.wav");
+//      playSound("coin16.wav");
       
       // Dispense a coin
       doCoin();
@@ -408,7 +286,7 @@ void doWinState(){
       doLights();
 
       // sound: highway to hell
-      playSound("hth16.wav");
+//      playSound("hth16.wav");
       
       doFire();
 
@@ -421,7 +299,7 @@ void doWinState(){
       doLights();
       
       // Sound: cheesy poofs
-      playSound("cheesy16.wav");
+//      playSound("cheesy16.wav");
 
       // no fire
       doFire();
@@ -434,7 +312,7 @@ void doWinState(){
       doLights();
       
       // Sound: PINCHAY
-      playSound("pinchy16.wav");
+//      playSound("pinchy16.wav");
 
       // fire all 4
       doFire();
@@ -454,11 +332,11 @@ void doWinState(){
       int fireThreadId = threads.addThread(doFire);
 
       // Wait for nyancat to finish playing, then kill the lights thread
-      while(playWav1.isPlaying()){
-        Serial.println("Waiting for nyancat to finish playing or fire to finish");
-      }
-
-      threads.kill(lightThreadId);
+//      while(playWav1.isPlaying()){
+//        Serial.println("Waiting for nyancat to finish playing or fire to finish");
+//      }
+//
+//      threads.kill(lightThreadId);
 
       for(int i = 0; i < 5; i++){
         playSound("coin16.wav");
@@ -477,12 +355,6 @@ void doWinState(){
     default: 
       break;
   } 
-
-  // Min amount of time before running off to resetState(). While sound is playing or some max time has reached or something
-  while(playWav1.isPlaying()){
-    Serial.println("Waiting for winstate audio to finish!");
-    delay(10);
-  }
 }
 
 //TODO: Set everything back to normal state for another round. are we missing anything?
@@ -495,12 +367,6 @@ void resetState(){
   // Reset coin and tentacle servo positions
   tentacleServo.write(90);
   coinServo.write(90);
-  
-  // Stop audio
-  playWav1.stop();
-  if(audioFile){
-    audioFile.close();
-  }
   
   // reset LEDs
   doLights();
@@ -832,141 +698,4 @@ void doCoin(){
   coinServo.write(90);
 }
 
-// This function opens a Windows Bitmap (BMP) file and
-// displays it at the given coordinates.  It's sped up
-// by reading many pixels worth of data at a time
-// (rather than pixel by pixel).  Increasing the buffer
-// size takes more of the Arduino's precious RAM but
-// makes loading a little faster.  20 pixels seems a
-// good balance.
-
-//#define BUFFPIXEL 20
-//
-//void bmpDraw(char *filename, uint8_t x, uint16_t y, Adafruit_HX8357 screen) {
-//  File     bmpFile;
-//  int      bmpWidth, bmpHeight;   // W+H in pixels
-//  uint8_t  bmpDepth;              // Bit depth (currently must be 24)
-//  uint32_t bmpImageoffset;        // Start of image data in file
-//  uint32_t rowSize;               // Not always = bmpWidth; may have padding
-//  uint8_t  sdbuffer[3*BUFFPIXEL]; // pixel buffer (R+G+B per pixel)
-//  uint16_t  buffidx = sizeof(sdbuffer); // Current position in sdbuffer
-//  boolean  goodBmp = false;       // Set to true on valid header parse
-//  boolean  flip    = false;        // BMP is stored bottom-to-top
-//  int      w, h, row, col;
-//  uint8_t  r, g, b;
-//  uint32_t pos = 0, startTime = millis();
-//
-//  if((x >= screen.width()) || (y >= screen.height())) return;
-//
-//  Serial.println();
-//  Serial.print(F("Loading image '"));
-//  Serial.print(filename);
-//  Serial.println('\'');
-//
-//  // Open requested file on SD card
-//  if((bmpFile = sd.open(filename)) == NULL){
-//    Serial.print(F("File not found"));
-//    return;
-//  }
-//
-//  // Parse BMP header
-//  if(read16(bmpFile) == 0x4D42) { // BMP signature
-//    Serial.print(F("File size: ")); Serial.println(read32(bmpFile));
-//    (void)read32(bmpFile); // Read & ignore creator bytes
-//    bmpImageoffset = read32(bmpFile); // Start of image data
-//    Serial.print(F("Image Offset: ")); Serial.println(bmpImageoffset, DEC);
-//    // Read DIB header
-//    Serial.print(F("Header size: ")); Serial.println(read32(bmpFile));
-//    bmpWidth  = read32(bmpFile);
-//    bmpHeight = read32(bmpFile);
-//    if(read16(bmpFile) == 1) { // # planes -- must be '1'
-//      bmpDepth = read16(bmpFile); // bits per pixel
-//      Serial.print(F("Bit Depth: ")); Serial.println(bmpDepth);
-//      if((bmpDepth == 24) && (read32(bmpFile) == 0)) { // 0 = uncompressed
-//
-//        goodBmp = true; // Supported BMP format -- proceed!
-//        Serial.print(F("Image size: "));
-//        Serial.print(bmpWidth);
-//        Serial.print('x');
-//        Serial.println(bmpHeight);
-//
-//        // BMP rows are padded (if needed) to 4-byte boundary
-//        rowSize = (bmpWidth * 3 + 3) & ~3;
-//
-//        // If bmpHeight is negative, image is in top-down order.
-//        // This is not canon but has been observed in the wild.
-//        if(bmpHeight < 0) {
-//          bmpHeight = -bmpHeight;
-//          flip      = false;
-//        }
-//
-//        // Crop area to be loaded
-//        w = bmpWidth;
-//        h = bmpHeight;
-//        if((x+w-1) >= screen.width())  w = screen.width()  - x;
-//        if((y+h-1) >= screen.height()) h = screen.height() - y;
-//
-//        // Set TFT address window to clipped image bounds
-//        screen.setAddrWindow(x, y, x+w-1, y+h-1);
-//
-//        for (row=0; row<h; row++) { // For each scanline...
-//
-//          // Seek to start of scan line.  It might seem labor-
-//          // intensive to be doing this on every line, but this
-//          // method covers a lot of gritty details like cropping
-//          // and scanline padding.  Also, the seek only takes
-//          // place if the file position actually needs to change
-//          // (avoids a lot of cluster math in SD library).
-//          if(flip) // Bitmap is stored bottom-to-top order (normal BMP)
-//            pos = bmpImageoffset + (bmpHeight - 1 - row) * rowSize;
-//          else     // Bitmap is stored top-to-bottom
-//            pos = bmpImageoffset + row * rowSize;
-//            
-//          if(bmpFile.position() != pos) { // Need seek?
-//            bmpFile.seek(pos);
-//            buffidx = sizeof(sdbuffer); // Force buffer reload
-//          }
-//
-//          for (col=0; col<w; col++) { // For each pixel...
-//            // Time to read more pixel data?
-//            if (buffidx >= sizeof(sdbuffer)) { // Indeed
-//              bmpFile.read(sdbuffer, sizeof(sdbuffer));
-//              buffidx = 0; // Set index to beginning
-//            }
-//
-//            // Convert pixel from BMP to TFT format, push to display
-//            b = sdbuffer[buffidx++];
-//            g = sdbuffer[buffidx++];
-//            r = sdbuffer[buffidx++];
-//            
-//            screen.pushColor(screen.color565(r,g,b));
-//
-//          } // end pixel
-//        } // end scanline
-//        Serial.print(F("Loaded in "));
-//        Serial.print(millis() - startTime);
-//        Serial.println(" ms");
-//      } // end goodBmp
-//    }
-//  }
-//
-//  bmpFile.close();
-//  if(!goodBmp) Serial.println(F("BMP format not recognized."));
-//}
-//
-//uint16_t read16(File &f) {
-//  uint16_t result;
-//  ((uint8_t *)&result)[0] = f.read(); // LSB
-//  ((uint8_t *)&result)[1] = f.read(); // MSB
-//  return result;
-//}
-//
-//uint32_t read32(File &f) {
-//  uint32_t result;
-//  ((uint8_t *)&result)[0] = f.read(); // LSB
-//  ((uint8_t *)&result)[1] = f.read();
-//  ((uint8_t *)&result)[2] = f.read();
-//  ((uint8_t *)&result)[3] = f.read(); // MSB
-//  return result;
-//}
 
