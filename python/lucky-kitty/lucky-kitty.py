@@ -400,6 +400,9 @@ class Game:
             pygame.display.update()
     
     # Does the actual scrolling thing?
+    #Todo(mje): Make it so the top and bottom images are partially cut off
+    # Make the window border the full size we want it to be,
+    # or else draw it manually
     def roll(self, img):
         szam = 0
         
