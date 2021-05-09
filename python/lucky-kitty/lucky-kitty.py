@@ -23,7 +23,6 @@ import os
 
 ##new lucky kitty specific stuff
 import serial
-import time
 
 # if __name__ == '__main__':
 #     ser = serial.Serial('/dev/ttyUSB0', 9600, timeout=5)
@@ -306,12 +305,67 @@ class Game:
         
         self.check()
         pygame.display.update()
+        
             
+        #TODO: Get me the index, see if it matches coin or w/e. Some struct
         if self.wins is not None:
-            self.coin.play()
+            index = self.imgpaths.index(self.wins)
+            if index == 0:
+                self.cheesy.play()
+                #SEND CHEESY CMD AND WAIT for both thread and play to stop
+                #sendandwait(cheesy)
+            elif index == 1:
+                self.coin.play()
+                #SEND COIN CMD AND WAIT
+            elif index == 2:
+                self.hth.play()
+                #SEND COIN CMD AND WAIT
+            elif index == 3:
+                self.nyan.play()
+                #SEND NYAN CMD AND WAIT
+            elif index == 4:
+                self.pinchy.play()
+                #SEND NYAN CMD AND WAIT
+            elif index == 5:
+                self.seth.play()
+                #SEND seth CMD AND WAIT
+                #Then send Coin-5 cmd and WAIT
+                #Then send 1up command and WAIT
+            elif index == 6:
+                self.scream.play()
+                #SEND tentacle CMD AND WAIT
+            elif index == 7:
+                self.coin.play()
         else:
             self.loss.play()
+    
+    def sendandwait(cmd):
+        #SEND CMD AND WAIT for both thread and play to stop
+        ser.write(cmd) #b"Hello from Raspiberry Pi!\n"
+        
+        while pygame.mixer.get_busy():
+            print("Waiting for sounds to finish playing")
+            pass
+        
+        while not (ser.in_waiting > 0):
+            print("Waiting for arduino to finish its stuff")
             
+        line = ser.readline().decode('utf-8').rstrip()
+        print("Arduino finished!")
+        print(line)
+        
+# 
+#         while True:
+#             if ser.in_waiting > 0:
+#                 line = ser.readline().decode('utf-8').rstrip()
+#                 print(line)
+# 
+#         while True:
+#             ser.write(b"Hello from Raspiberry Pi!\n")
+#             line = ser.readline().decode('utf-8').rstrip()
+#             print(line)
+#             time.sleep(1)
+        
     # dont need
     def endthegame(self):
         pygame.draw.line(self.screen, [176, 176, 176], (50, 250), (590, 250), 400)
@@ -339,6 +393,11 @@ if __name__ == "__main__":
         if opt in ("-v", "--version"):
             print("Lucky Kitty - version: "+ VERSION)
             exit()
+         
+    # Setup serial communication
+    #TODO(MJE): How will this work when we boot up?
+    ser = serial.Serial('/dev/ttyUSB0', 9600, timeout=5)
+    ser.flush()
             
     # pygame init, set display
     pygame.init()
