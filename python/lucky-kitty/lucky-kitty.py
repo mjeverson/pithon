@@ -53,11 +53,17 @@ class Game:
         self.screen = screen
         
         self.bsound = pygame.mixer.Sound("data/sounds/CLICK10A.WAV")
-        self.rasound = pygame.mixer.Sound("data/sounds/film_projector.wav")
-        self.rbsound = pygame.mixer.Sound("data/sounds/film_projector.wav")
-        self.rcsound = pygame.mixer.Sound("data/sounds/film_projector.wav")
-#         self.bgsound = pygame.mixer.Sound("data/sounds/background001.wav")
-        self.beepsound = pygame.mixer.Sound("data/sounds/beep.wav")
+        self.oneup = pygame.mixer.Sound("_assets/_sounds/1up16.wav")
+        self.cheesy = pygame.mixer.Sound("_assets/_sounds/cheesy16.wav")
+        self.coin = pygame.mixer.Sound("_assets/_sounds/coin16.wav")
+        self.hth = pygame.mixer.Sound("_assets/_sounds/hth16.wav")
+        self.loss = pygame.mixer.Sound("_assets/_sounds/loss16.wav")
+        self.nyan = pygame.mixer.Sound("_assets/_sounds/nyan16.wav")
+        self.pinchy = pygame.mixer.Sound("_assets/_sounds/pinchy16.wav")
+        self.reel = pygame.mixer.Sound("_assets/_sounds/reel16.wav")
+        self.rstop = pygame.mixer.Sound("_assets/_sounds/rstop16.wav")
+        self.scream = pygame.mixer.Sound("_assets/_sounds/scream16.wav")
+        self.seth = pygame.mixer.Sound("_assets/_sounds/seth16.wav")
         self.background = pygame.image.load("data/img/bg.png")
 #         self.rlayer = pygame.image.load("data/img/rlayer.png")
 # Maybe change this to just be the one black line across
@@ -84,16 +90,15 @@ class Game:
         
         # Randomize and update the images without actually doing the roll 
         self.randi()
+        self.screen.fill([0, 0, 0])
+        self.screen.blit(self.background, (0, 0))
         self.drawl()
-        
-#         self.bgsound.play(loops=-1)
+        self.screen.blit(self.windowlayer, (0, 0))
+        pygame.display.update()
         
         # mainloop
         while True:
-            self.screen.fill([0, 0, 0])
-#             self.screen.blit(self.background, (0, 0))
             ##todo(mje): OR lever has been pulled
-
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     exit()
@@ -102,10 +107,13 @@ class Game:
                     self.bsound.play()
                     if event.key == pygame.K_LEFT and self.keys == 1:
                         self.randi()
-                        self.check()
                         self.roll(img)
+                        #reused
                         self.screen.blit(self.background, (0, 0))
                         self.drawl()
+                        self.screen.blit(self.windowlayer, (0, 0))
+                        #/reused
+                        pygame.display.update()
                         self.winner()
                         
                     if event.key == pygame.K_F1:
@@ -119,37 +127,24 @@ class Game:
                     if event.key == pygame.K_RETURN:
                         self.keys = 0
                         self.menu = "e"
-                
-            self.drawl()
-            self.check()
-            self.wins = None#[0, 0, 0, 0, 0]
-            
-#             if self.credit == 0 and self.bet == 0:
-#                 font = pygame.font.Font("data/LiberationSans-Regular.ttf", 55)
-#                 text_surface = font.render("Game Over", True, [255, 0, 0])
-#                 self.screen.blit(text_surface, (70, 190))
-            
-#             self.screen.blit(self.rlayer, (37, 48))
-            self.screen.blit(self.windowlayer, (0, 0))
-            
+
             if self.keys == 0 and self.menu == "h":
                 self.helpmenu()
             if self.keys == 0 and self.menu == "e":
-                self.endthegame(scr)
-            
-            pygame.display.update()
-    
+                self.endthegame()
+                
+
     # Does the actual scrolling thing?
     #Todo(mje): Make it so the top and bottom images are partially cut off
     # Make the window border the full size we want it to be,
     # or else draw it manually
     def roll(self, img):
         szam = 0
-        
+        self.reel.play(loops=-1)
         
         # toll time
         # TODO: is this how long we scroll for?
-        rolla = randrange(5, 14)
+        rolla = randrange(100, 280)
         rollb = randrange(rolla+1, rolla+5)
         rollc = randrange(rollb+1, rollb+5)
         
@@ -161,7 +156,6 @@ class Game:
         while szam <= rolla-3:
             rollaf.append(img[randrange(0, 8)])
             szam = szam + 1
-        self.rasound.play()
         rollaf.append(img[self.imgpaths.index(self.showold[0])-1])
         rollaf.append(img[self.imgpaths.index(self.showold[1])-1])
         rollaf.append(img[self.imgpaths.index(self.showold[2])-1])
@@ -177,7 +171,6 @@ class Game:
         while szam <= rollb-3:
             rollbf.append(img[randrange(0, 8)])
             szam = szam +1
-        self.rbsound.play()
         rollbf.append(img[self.imgpaths.index(self.showold[3])-1])
         rollbf.append(img[self.imgpaths.index(self.showold[4])-1])
         rollbf.append(img[self.imgpaths.index(self.showold[5])-1])
@@ -192,7 +185,7 @@ class Game:
         while szam <= rollc-3:
             rollcf.append(img[randrange(0, 8)])
             szam = szam +1
-        self.rcsound.play()
+
         rollcf.append(img[self.imgpaths.index(self.showold[6])-1])
         rollcf.append(img[self.imgpaths.index(self.showold[7])-1])
         rollcf.append(img[self.imgpaths.index(self.showold[8])-1])
@@ -215,7 +208,6 @@ class Game:
                 self.screen.blit(rollaf[len(rollaf)-3], (36, 46))
                 self.screen.blit(rollaf[len(rollaf)-2], (36, 174))
                 self.screen.blit(rollaf[len(rollaf)-1], (36, 302))
-                self.rasound.stop()
                 
             if szamb > 2:
                 self.screen.blit(rollbf[len(rollbf)-3], (165, 46))
@@ -227,7 +219,6 @@ class Game:
                 self.screen.blit(rollbf[len(rollbf)-3], (165, 46))
                 self.screen.blit(rollbf[len(rollbf)-2], (165, 174))
                 self.screen.blit(rollbf[len(rollbf)-1], (165, 302))
-                self.rbsound.stop()
                 
             if szamc > 2:
                 self.screen.blit(rollcf[len(rollcf)-3], (295, 46))
@@ -243,9 +234,11 @@ class Game:
             self.screen.blit(self.windowlayer, (0, 0))
             pygame.display.update()
             rollc = rollc - 1
-        self.rcsound.stop()
+        self.reel.stop()
+        self.rstop.play()
     
     def drawl(self):
+        #blit(image, (x,y to load it in)
         self.screen.blit(pygame.image.load(self.show[0]), (36, 46))
         self.screen.blit(pygame.image.load(self.show[1]), (36, 174))
         self.screen.blit(pygame.image.load(self.show[2]), (36, 302))
@@ -280,19 +273,19 @@ class Game:
         for n in ran:
             if 1 <= ran[n] <= 5:
                 self.show.append(self.imgpaths[7])
-            if 6 <= ran[n] <= 15:
+            elif 6 <= ran[n] <= 15:
                 self.show.append(self.imgpaths[6])
-            if 16 <= ran[n] <= 30:
+            elif 16 <= ran[n] <= 30:
                 self.show.append(self.imgpaths[5])
-            if 31 <= ran[n] <= 50:
+            elif 31 <= ran[n] <= 50:
                 self.show.append(self.imgpaths[4])
-            if 51 <= ran[n] <= 120:
+            elif 51 <= ran[n] <= 120:
                 self.show.append(self.imgpaths[3])
-            if 121 <= ran[n] <= 180:
+            elif 121 <= ran[n] <= 180:
                 self.show.append(self.imgpaths[2])
-            if 181 <= ran[n] <= 253:
+            elif 181 <= ran[n] <= 253:
                 self.show.append(self.imgpaths[1])
-            if 254 <= ran[n] <= 334:
+            else:
                 self.show.append(self.imgpaths[0])
 
     # Checks if any of your lines have won
@@ -306,17 +299,23 @@ class Game:
     def winner(self):
         print("WIN STATE:")
         print(self.wins)
+        
+        #TODO: Some indicator that the system is not yet ready
+        while pygame.mixer.get_busy():
+            pass
+        
+        self.check()
+        pygame.display.update()
+            
         if self.wins is not None:
-            self.beepsound.play()
+            self.coin.play()
+        else:
+            self.loss.play()
+            
     # dont need
-    def endthegame(self, scr):
-        scrb = int(scr)
+    def endthegame(self):
         pygame.draw.line(self.screen, [176, 176, 176], (50, 250), (590, 250), 400)
 
-    #dont need
-    def writehs(self, myhsfile):
-        writef = open(myhsfile, "w")
-        writef.close()
         
 # probably dont need
 def help():
