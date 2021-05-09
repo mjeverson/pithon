@@ -130,7 +130,7 @@ class Game:
             if self.keys == 0 and self.menu == "h":
                 self.helpmenu()
             if self.keys == 0 and self.menu == "e":
-                self.endthegame()
+                exit()
                 
 
     # Does the actual scrolling thing?
@@ -270,6 +270,8 @@ class Game:
         self.show = []
         #todo(mje): Okay so this is where we decide what img to show and what outcome we get with likelihoods
         for n in ran:
+#Uncomment this line and comment the rest to test a specific outcome
+#             self.show.append(self.imgpaths[0])
             if 1 <= ran[n] <= 5:
                 self.show.append(self.imgpaths[7])
             elif 6 <= ran[n] <= 15:
@@ -312,6 +314,7 @@ class Game:
             index = self.imgpaths.index(self.wins)
             if index == 0:
                 self.cheesy.play()
+                self.sendandwait(b"CHEESE\n")
                 #SEND CHEESY CMD AND WAIT for both thread and play to stop
                 #sendandwait(cheesy)
             elif index == 1:
@@ -339,37 +342,19 @@ class Game:
         else:
             self.loss.play()
     
-    def sendandwait(cmd):
+    def sendandwait(self, cmd):
         #SEND CMD AND WAIT for both thread and play to stop
         ser.write(cmd) #b"Hello from Raspiberry Pi!\n"
         
         while pygame.mixer.get_busy():
-            print("Waiting for sounds to finish playing")
             pass
         
         while not (ser.in_waiting > 0):
-            print("Waiting for arduino to finish its stuff")
+            pass
             
         line = ser.readline().decode('utf-8').rstrip()
         print("Arduino finished!")
         print(line)
-        
-# 
-#         while True:
-#             if ser.in_waiting > 0:
-#                 line = ser.readline().decode('utf-8').rstrip()
-#                 print(line)
-# 
-#         while True:
-#             ser.write(b"Hello from Raspiberry Pi!\n")
-#             line = ser.readline().decode('utf-8').rstrip()
-#             print(line)
-#             time.sleep(1)
-        
-    # dont need
-    def endthegame(self):
-        pygame.draw.line(self.screen, [176, 176, 176], (50, 250), (590, 250), 400)
-
         
 # probably dont need
 def help():
@@ -396,7 +381,10 @@ if __name__ == "__main__":
          
     # Setup serial communication
     #TODO(MJE): How will this work when we boot up?
-    ser = serial.Serial('/dev/ttyUSB0', 9600, timeout=5)
+    # PI
+#     ser = serial.Serial('/dev/ttyUSB0', 9600, timeout=5)
+    # OSX
+    ser = serial.Serial('/dev/cu.usbserial-A603GDYX', 9600, timeout=5)
     ser.flush()
             
     # pygame init, set display
@@ -405,6 +393,5 @@ if __name__ == "__main__":
     pygame.display.set_caption("Lucky Kitty MkII")
     pygame.mouse.set_visible(False)
     
-    plc = Game() #This is how you do a new thing, dont even need the plc
-    
+    plc = Game() 
     pygame.display.update()
