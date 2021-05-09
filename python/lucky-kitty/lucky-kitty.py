@@ -276,12 +276,12 @@ VERSION = "0.1.2"
 # the game###########################
 class Game:
     def __init__(self):
-        self.mut = 0
-        self.wins = [0, 0, 0, 0, 0]
-        self.keys = 1
-        self.credit = 20
-        self.bet = 1
-        self.lastwin = 0
+#         self.mut = 0 #wat do
+        self.wins = None#[0, 0, 0, 0, 0]
+        self.keys = 1 #wat do
+#         self.credit = 20
+#         self.bet = 1
+#         self.lastwin = 0
         self.show = []
         
         self.screen = screen
@@ -316,8 +316,8 @@ class Game:
         img.append(self.imgseven)
         img.append(self.imgeight)
         
+        # Randomize and update the images without actually doing the roll 
         self.randi()
-        # Update the images without actually doing the roll 
         self.drawl()
         
 #         self.bgsound.play(loops=-1)
@@ -325,7 +325,9 @@ class Game:
         # mainloop
         while True:
             self.screen.fill([0, 0, 0])
-            self.screen.blit(self.background, (0, 0))
+#             self.screen.blit(self.background, (0, 0))
+            ##todo(mje): OR lever has been pulled
+
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
 #                     self.bgsound.stop()
@@ -349,16 +351,16 @@ class Game:
 #                             plc = Menu()
                             
 #                     if self.credit > 0:
-                        if event.key == pygame.K_UP and self.keys == 1:
-                            if self.credit - self.bet - 1 >= 0:
-                                self.bet = self.bet + 1
-                            else:
-                                self.bet = 1
-                            if self.bet == 11:
-                                self.bet = 1
-                            
-                    else:
-                        self.bet = 0
+#                         if event.key == pygame.K_UP and self.keys == 1:
+#                             if self.credit - self.bet - 1 >= 0:
+#                                 self.bet = self.bet + 1
+#                             else:
+#                                 self.bet = 1
+#                             if self.bet == 11:
+#                                 self.bet = 1
+#                             
+#                     else:
+#                         self.bet = 0
                             
                             
                     if event.key == pygame.K_F1:
@@ -379,10 +381,10 @@ class Game:
                             
 #             self.draw_side()
             
-            if self.mut == 1:
-                self.drawl()
-                self.check()
-                self.wins = [0, 0, 0, 0, 0]
+#             if self.mut == 1:
+            self.drawl()
+            self.check()
+            self.wins = None#[0, 0, 0, 0, 0]
             
 #             if self.credit == 0 and self.bet == 0:
 #                 font = pygame.font.Font("data/LiberationSans-Regular.ttf", 55)
@@ -568,7 +570,7 @@ class Game:
             self.showold = self.show
         else:
             self.showold = ["data/img/8.png", "data/img/8.png", "data/img/8.png", "data/img/8.png", "data/img/8.png", "data/img/8.png", "data/img/8.png", "data/img/8.png", "data/img/8.png"]
-        self.mut = 1
+#         self.mut = 1
         ran = {}
         ran[0] = randrange(1, 335)
         ran[1] = randrange(1, 335)
@@ -606,7 +608,9 @@ class Game:
 #             self.wins[0] = self.show[0]
         if self.show[1] == self.show[4] == self.show[7]:
             pygame.draw.line(self.screen, [246, 226, 0], (36, 239), (423, 239), 8)
-            self.wins[1] = self.show[1]
+            self.wins = self.show[1]
+        else:
+            self.wins = None
             #TODO: We need to know WHAT's being shown so we know the winstate
 #         if self.show[2] == self.show[5] == self.show[8]:
 #             pygame.draw.line(self.screen, [246, 226, 0], (36, 367), (423, 367), 8)
@@ -619,7 +623,11 @@ class Game:
 #             self.wins[4] = self.show[2]
             
     def winner(self):
-        self.lastwin = 0
+        print("WIN STATE:")
+        print(self.wins)
+        if self.wins is not None:
+            self.beepsound.play()
+#         self.lastwin = 0
         #tODO:self.wins[1] will be the middle line, with the PATH of the image that won
         # probably wanna make it some ENUM or something
         # Also make sure this gets reset
@@ -665,10 +673,10 @@ class Game:
 #             if event.type == pygame.KEYDOWN:
 #                 self.bgsound.stop()
 #                 plc = Menu()
-    
+    #dont need
     def writehs(self, myhsfile):
         writef = open(myhsfile, "w")
-        writef.write(str(self.credit))
+#         writef.write(str(self.credit))
         writef.close()
         
 
