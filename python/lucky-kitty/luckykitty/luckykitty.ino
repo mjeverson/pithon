@@ -9,30 +9,29 @@
 
  ****************************************************/
 
-#include <PWMServo.h> // Tentacle & Coin
+//#include <PWMServo.h> // Tentacle & Coin
+#include <Servo.h> // Tentacle & Coin
 //#include <TeensyThreads.h> // Threading
+#include <pt.h>   // include protothread library
 #include <Adafruit_NeoPixel.h> // LED Stuff
 
-// Handle mechanism
-//#define HANDLE A2
-
 // Solenoids
-#define SOL1 20
-#define SOL2 21
-#define SOL3 22
+#define SOL1 2
+#define SOL2 4
+#define SOL3 7
 #define SOL4 23
 
-// Valid output pins: //2-10, 14, 16-17, 20-23, 29-30, 35-38
-#define TENTACLE_SERVO 35
-#define COIN_SERVO 36
-#define PIXEL 38
+// Valid PWM pins: //3,5,6,9,10,11
+#define TENTACLE_SERVO 8
+#define COIN_SERVO 6
+#define PIXEL 9
 #define NUM_PIXELS 90
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(NUM_PIXELS, PIXEL, NEO_GRBW + NEO_KHZ800);
 
-PWMServo tentacleServo;
-PWMServo coinServo;  
-int tentacleServoPos = 0;
-int coinServoPos = 0;
+static struct pt pt1, pt2; // each protothread needs one of these
+
+Servo tentacleServo;
+Servo coinServo;  
 
 #define WINSTATE_NONE 0
 #define WINSTATE_NYAN 1
@@ -44,11 +43,11 @@ int coinServoPos = 0;
 #define WINSTATE_LOSS 7
 #define WINSTATE_SETH 8
 int winState, slot1_current, slot2_current, slot3_current; 
-
+int elapsedTime = 0;
 // Get this party started!
 void setup() {
   // Sets up the RNG
-  randomSeed(analogRead(A0));
+//  randomSeed(analogRead(A0));
   
   Serial.begin(9600);
 
@@ -60,34 +59,126 @@ void setup() {
 
   //Set up servos
   tentacleServo.attach(TENTACLE_SERVO);
-  coinServo.attach(COIN_SERVO);
+//  coinServo.attach(COIN_SERVO);
 
   // Set up LEDs. Some default colour to indicate ready to go
   strip.begin();
 
+  // initialise the two protothread variables
+  PT_INIT(&pt1);  
+  PT_INIT(&pt2);  
+
   // Initializes the state of the peripherals
   resetState();
+  elapsedTime = millis();
+}
+
+int activeTentacle = 0;
+int activeLights = 0;
+
+/* This function toggles the LED after 'interval' ms passed */
+static int protothread1(struct pt *pt) {
+  static unsigned long timestamp = 0;
+  PT_BEGIN(pt);
+  while(1) { // never stop 
+    Serial.print("PT1");
+    /* each time the function is called the second boolean
+    *  argument "millis() - timestamp > interval" is re-evaluated
+    *  and if false the function exits after that. */
+      PT_WAIT_UNTIL(pt, activeTentacle == 1);
+      Serial.print("PT1 PART A");
+      tentacleServo.write(0); 
+      timestamp = millis(); // take a new timestamp
+      
+      PT_WAIT_UNTIL(pt, activeTentacle == 1 && millis() - timestamp > 500);
+      Serial.print("PT1 PART B");
+      tentacleServo.write(45); 
+      timestamp = millis(); // take a new timestamp
+      
+      PT_WAIT_UNTIL(pt, activeTentacle == 1 && millis() - timestamp > 300);
+      Serial.print("PT1 PART C");
+      tentacleServo.write(0); 
+      timestamp = millis(); // take a new timestamp
+      
+      PT_WAIT_UNTIL(pt, activeTentacle == 1 && millis() - timestamp > 300);
+      tentacleServo.write(45); 
+      timestamp = millis(); // take a new timestamp
+      
+      PT_WAIT_UNTIL(pt, activeTentacle == 1 && millis() - timestamp > 300);
+      tentacleServo.write(0); 
+      timestamp = millis(); // take a new timestamp
+      
+      PT_WAIT_UNTIL(pt, activeTentacle == 1 && millis() - timestamp > 500);
+      tentacleServo.write(90); 
+      timestamp = millis(); // take a new timestamp
+      activeTentacle = 0;
+  }
+
+  PT_END(pt);
+}
+
+static int protothread2(struct pt *pt) {
+  static unsigned long timestamp = 0; 
+  static uint16_t i;
+  static uint16_t j = 0;
+  
+  PT_BEGIN(pt);
+  while(1) { // never stop 
+//    Serial.print("PT2");
+    /* each time the function is called the second boolean
+    *  argument "millis() - timestamp > interval" is re-evaluated
+    *  and if false the function exits after that. */
+    PT_WAIT_UNTIL(pt, activeLights == 1);
+    timestamp = millis();
+    if (j > 255){
+      j = 0;
+    }
+
+    for(i=0; i< strip.numPixels(); i++) {
+      strip.setPixelColor(i, Wheel(((i * 256 / strip.numPixels()) + j) & 255));
+    }
+    
+    strip.show();
+    j += 10;
+    PT_WAIT_UNTIL(pt, activeLights == 1 && millis() - timestamp > 10);
+    timestamp = millis();
+  }
+  PT_END(pt);
 }
 
 void loop() {
   Serial.flush();
-  
-  if (Serial.available() > 0){
-//    Serial.print("STATE: ");
-//    Serial.print(state);
+//Serial.print("CHECKING");
+  // schedule the two protothreads by calling them infinitely
+  //todo:maybe keep intervals, and then every 10ms or so check to see if we need to update based on other stuff
+  protothread1(&pt1); 
+  protothread2(&pt2); 
+//Serial.print("CHECKING2");
+//tentacleServo.write(0);
+//delay(15);   
+
+  if (millis() - elapsedTime < 5000) {
 //    
-//    if (state == 0) {
-//      digitalWrite(led, HIGH);
-//      state = 1;
-//    } else {
-//      digitalWrite(led, LOW);
-//      state = 0;
-//    }
-//    
-    String data = Serial.readStringUntil('\n');
-    Serial.print("You sent me: ");
-    Serial.println(data);
+
+    if (activeTentacle != 1){ 
+      activeTentacle = 1;
+    }
+
+    if (activeLights != 1){ 
+      activeLights = 1;
+    }
+  } else {
+    activeTentacle = 0;
+    activeLights = 0;
+    resetState();
   }
+
+  
+//  if (Serial.available() > 0){
+//    String data = Serial.readStringUntil('\n');
+//    Serial.print("You sent me: ");
+//    Serial.println(data);
+//  }
 
 //todo:wait until we get a code from the pi. 
 // Set the winstate based on that, then doWinState with some small changes, followed by "done"
@@ -383,14 +474,14 @@ void resetState(){
   
   // Reset coin and tentacle servo positions
   tentacleServo.write(90);
-  coinServo.write(90);
+//  coinServo.write(90);
   
   // reset LEDs
   doLights();
 //  analogWrite(SAFETY_PIXEL, 255);
 
   // Make sure fire is off
-  doFire();
+//  doFire();
 }
 
 // Stops any existing sound, makes sure the file is closed, then keeps attempting to play the sound until it actually starts
@@ -685,7 +776,7 @@ uint32_t Wheel(byte WheelPos) {
 }
 
 // Makes the tentacle pop out, wiggle around, and go away
-void doTentacle(){
+//void doTentacle(){
 //  Serial.println("About to do tentacle");
 
 //  tentacleServo.write(0); 
@@ -704,7 +795,8 @@ void doTentacle(){
 //  threads.delay(500);
 //  
 //  tentacleServo.write(90);
-}
+//}
+
 
 
 // Triggers the coin dispenser to dispense a coin
