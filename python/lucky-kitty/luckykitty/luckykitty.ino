@@ -106,151 +106,9 @@ void loop() {
 //    Serial.println(data);
 //  }
 }
-//
-//void doWinState(){
-//  //based on win state do sounds, fire, etc.
-//  switch (winState) {
-//    case WINSTATE_NYAN: {
-//      // Start lights thread, start playing nyan cat, start fire thread, wait til both nyancat and fire are done
-//      // Do Lights in a thread
-//      int lightThreadId = -1;//threads.addThread(doLights);
-//
-//      // Sound: Nyancat. This occasionally gets skipped. Some weird timing thing? wait til it starts playing.
-////      playSound("nyan16.wav");
-//
-//      // Do the fire. Might need to swap to clock watching
-//      int fireThreadId = -1;// threads.addThread(doFire);
-////      threads.kill(lightThreadId);
-//      
-//      break;
-//    }
-//    case WINSTATE_TENTACLE: {
-//      // Change lights, start scream sound, start tentacle thread, start fire thread, wait til both tentacle and fire are done
-//
-//      // LEDs: green
-//      doLights();
-//
-//      // Sound: person screaming
-////      playSound("scream16.wav");
-//  
-//      // Wave the tentacle
-//      int tentacleThreadId = -1;//threads.addThread(doTentacle);
-//
-////      while(threads.getState(tentacleThreadId) == Threads::RUNNING) {
-////        Serial.println("Waiting for tentacle or fire thread");
-////      }
-//
-//      //fire: all at once
-//      doFire();
-//        
-//      break;
-//    }
-//    case WINSTATE_COIN:
-//      // Change lights, start coin sound + 1up sound, do fire, do coin
-//
-//      // LEDs: Yellow
-//      doLights();
-//
-//      //TODO: sound: mario 1up/coin
-////      playSound("coin16.wav");
-//      
-//      // Dispense a coin
-//      doCoin();
-//
-////      delay(10);
-////      while(playWav1.isPlaying()){
-////        delay(10);
-////      }
-////
-////      playSound("1up16.wav");
-////      
-////      delay(10);
-////      while(playWav1.isPlaying()){
-////        delay(10);
-////      }
-//
-//      // fire: 1-3-2-4-all
-//      doFire();
-//      
-//      break;
-//    case WINSTATE_FIRE:
-//      // Change lights, start playing sound, do fire, wait til sound is finished
-//      
-//      // LEDs: Red
-//      doLights();
-//
-//      // sound: highway to hell
-////      playSound("hth16.wav");
-//      
-//      doFire();
-//
-//      break;
-//    case WINSTATE_CHEESY:
-//      // Change lights, start playing sound, do fire
-//      
-//      // LEDs: orange
-//      doLights();
-//      
-//      // Sound: cheesy poofs
-////      playSound("cheesy16.wav");
-//
-//      // no fire
-//      doFire();
-//
-//      break;
-//    case WINSTATE_PINCHY:
-//      // LEDs: Red
-//      doLights();
-//      
-//      // Sound: PINCHAY
-////      playSound("pinchy16.wav");
-//
-//      // fire all 4
-//      doFire();
-//      
-//      break;
-//    case WINSTATE_SETH: {
-//      //todo: add seth win
-////      playSound("seth16.wav");
-//
-//      delay(1500);
-//
-//      //todo: threaded rainbow colours
-//      int lightThreadId = -1;//threads.addThread(doLights);
-//
-//      //todo: threaded fire
-//      int fireThreadId = -1;//threads.addThread(doFire);
-//
-//      // Wait for nyancat to finish playing, then kill the lights thread
-////      while(playWav1.isPlaying()){
-////        Serial.println("Waiting for nyancat to finish playing or fire to finish");
-////      }
-////
-////      threads.kill(lightThreadId);
-//
-//      for(int i = 0; i < 5; i++){
-////        playSound("coin16.wav");
-//        doCoin();
-//        delay(200);
-//      }
-//
-////      playSound("1up16.wav");
-//
-//      break;
-//    }
-//    case WINSTATE_LOSS:
-////      playSound("loss16.wav");
-//      doLights();
-//      break;
-//    default: 
-//      break;
-//  } 
-//}
 
 //TODO: Set everything back to normal state for another round. are we missing anything?
 void resetState(){
-//  Serial.println("Round over, state reset!");
-
   // Reset the win state
   winState = WINSTATE_NONE;
   
@@ -260,7 +118,6 @@ void resetState(){
   
   // reset LEDs
   doLights();
-//  analogWrite(SAFETY_PIXEL, 255);
 
   // Make sure fire is off
 //  doFire();
@@ -268,8 +125,6 @@ void resetState(){
 
 // Do the fire. Might need to swap to clock watching
 void doFire(){
-//  Serial.println("doing fire");
-
   switch (winState) {
     case WINSTATE_NYAN: 
       //1-2-3-4
