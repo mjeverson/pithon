@@ -11,7 +11,6 @@
 
 //#include <PWMServo.h> // Tentacle & Coin
 #include <Servo.h> // Tentacle & Coin
-//#include <TeensyThreads.h> // Threading
 #include <pt.h>   // include protothread library
 #include <Adafruit_NeoPixel.h> // LED Stuff
 
@@ -42,8 +41,8 @@ Servo coinServo;
 #define WINSTATE_PINCHY 6
 #define WINSTATE_LOSS 7
 #define WINSTATE_SETH 8
-int winState, slot1_current, slot2_current, slot3_current; 
-int elapsedTime = 0;
+int winState;
+int elapsedTime = 0; //testing only
 // Get this party started!
 void setup() {
   // Sets up the RNG
@@ -70,96 +69,20 @@ void setup() {
 
   // Initializes the state of the peripherals
   resetState();
-  elapsedTime = millis();
+  elapsedTime = millis(); //testing only
 }
 
-int activeTentacle = 0;
-int activeLights = 0;
-
-/* This function toggles the LED after 'interval' ms passed */
-static int protothread1(struct pt *pt) {
-  static unsigned long timestamp = 0;
-  PT_BEGIN(pt);
-  while(1) { // never stop 
-    Serial.print("PT1");
-    /* each time the function is called the second boolean
-    *  argument "millis() - timestamp > interval" is re-evaluated
-    *  and if false the function exits after that. */
-      PT_WAIT_UNTIL(pt, activeTentacle == 1);
-      Serial.print("PT1 PART A");
-      tentacleServo.write(0); 
-      timestamp = millis(); // take a new timestamp
-      
-      PT_WAIT_UNTIL(pt, activeTentacle == 1 && millis() - timestamp > 500);
-      Serial.print("PT1 PART B");
-      tentacleServo.write(45); 
-      timestamp = millis(); // take a new timestamp
-      
-      PT_WAIT_UNTIL(pt, activeTentacle == 1 && millis() - timestamp > 300);
-      Serial.print("PT1 PART C");
-      tentacleServo.write(0); 
-      timestamp = millis(); // take a new timestamp
-      
-      PT_WAIT_UNTIL(pt, activeTentacle == 1 && millis() - timestamp > 300);
-      tentacleServo.write(45); 
-      timestamp = millis(); // take a new timestamp
-      
-      PT_WAIT_UNTIL(pt, activeTentacle == 1 && millis() - timestamp > 300);
-      tentacleServo.write(0); 
-      timestamp = millis(); // take a new timestamp
-      
-      PT_WAIT_UNTIL(pt, activeTentacle == 1 && millis() - timestamp > 500);
-      tentacleServo.write(90); 
-      timestamp = millis(); // take a new timestamp
-      activeTentacle = 0;
-  }
-
-  PT_END(pt);
-}
-
-static int protothread2(struct pt *pt) {
-  static unsigned long timestamp = 0; 
-  static uint16_t i;
-  static uint16_t j = 0;
-  
-  PT_BEGIN(pt);
-  while(1) { // never stop 
-//    Serial.print("PT2");
-    /* each time the function is called the second boolean
-    *  argument "millis() - timestamp > interval" is re-evaluated
-    *  and if false the function exits after that. */
-    PT_WAIT_UNTIL(pt, activeLights == 1);
-    timestamp = millis();
-    if (j > 255){
-      j = 0;
-    }
-
-    for(i=0; i< strip.numPixels(); i++) {
-      strip.setPixelColor(i, Wheel(((i * 256 / strip.numPixels()) + j) & 255));
-    }
-    
-    strip.show();
-    j += 10;
-    PT_WAIT_UNTIL(pt, activeLights == 1 && millis() - timestamp > 10);
-    timestamp = millis();
-  }
-  PT_END(pt);
-}
 
 void loop() {
   Serial.flush();
-//Serial.print("CHECKING");
+
   // schedule the two protothreads by calling them infinitely
   //todo:maybe keep intervals, and then every 10ms or so check to see if we need to update based on other stuff
   protothread1(&pt1); 
   protothread2(&pt2); 
-//Serial.print("CHECKING2");
-//tentacleServo.write(0);
-//delay(15);   
 
+//testcode
   if (millis() - elapsedTime < 5000) {
-//    
-
     if (activeTentacle != 1){ 
       activeTentacle = 1;
     }
@@ -172,298 +95,157 @@ void loop() {
     activeLights = 0;
     resetState();
   }
+}
 
-  
+//todo:wait until we get a code from the pi. 
+// Set the global winstate based on that, then doWinState with some small changes, followed by "done"
+// There'll need to be an extra command for "dispense N coins"
 //  if (Serial.available() > 0){
 //    String data = Serial.readStringUntil('\n');
 //    Serial.print("You sent me: ");
 //    Serial.println(data);
 //  }
-
-//todo:wait until we get a code from the pi. 
-// Set the winstate based on that, then doWinState with some small changes, followed by "done"
-// There'll need to be an extra command for "dispense N coins"
-//  if(Serial.available()){
-//    doCoin();
-//    Serial.read();
-//  }
-
 }
-
-
-// Sets the slots rolling, picks an outcome and displays it
-// On rollSlots, we should iterate through 0-6 and set the slot to be whatever its current state is +1 (rolling over, so use %)
-// Also need to randomize a win state. States should be any of the 6 outcomes, or a total loss, or an almost loss (Trish has the odds)
-// On a result, save the global state of the slots. 
-// keep rolling the first slot til it gets where it needs to go. Then the second, then the third. (don't update the global state)
-// OR just let the first slot start one or two early, then the second slot, then the third slot. let them roll a few times, then do it all again. Don't need global state
-//void rollSlots(){  
-//  // Start playing rolling sound
-//  int playReelLoopThreadID = threads.addThread(playReelLoopThread);
 //
-//  // Calculate win state
-//  int winRoll = random(1,100); 
-//  
-//  // Calcuate partial fail slot displays
-//  int falseWinSlot, falseWinSlotOdd;
-//    
-//  do {
-//    falseWinSlot = random(0,6);
-//    falseWinSlotOdd = random(0,6);
-//  } while (falseWinSlot == falseWinSlotOdd);
-//  
-//  int slot1_end, slot2_end, slot3_end;
-//  
-//  if (winRoll <= 10) {
-//    // nyancat, 10% chance
-//    winState = WINSTATE_NYAN;
-//    slot1_end = slot2_end = slot3_end = 0;
-//  } else if (winRoll <= 20){
-//    // tentacle, 10% chance
-//    winState = WINSTATE_TENTACLE;
-//    slot1_end = slot2_end = slot3_end = 1;
-//  } else if (winRoll <= 25) {
-//    // coin, 5% chance
-//    winState = WINSTATE_COIN;
-//    slot1_end = slot2_end = slot3_end = 2;
-//  } else if (winRoll <= 35) {
-//    // fire, 10% chance
-//    winState = WINSTATE_FIRE;
-//    slot1_end = slot2_end = slot3_end = 3;
-//  } else if (winRoll <= 45) {
-//    // cheesy poofs, 10% chance
-//    winState = WINSTATE_CHEESY;
-//    slot1_end = slot2_end = slot3_end = 4;
-//  } else if (winRoll <= 50){
-//    // pinchy, 5% chance
-//    winState = WINSTATE_PINCHY;
-//    slot1_end = slot2_end = slot3_end = 5;
-//  } else if (winRoll <= 52) {
-//    //todo: seth win, 2% chance
-//    winState = WINSTATE_SETH;
-//    slot1_end = slot2_end = slot3_end = 6;
-//  } else if (winRoll <= 62) {
-//    // partial fail, 10% chance
-//    winState = WINSTATE_LOSS;
-//    slot1_end = slot2_end = falseWinSlot;
-//    slot3_end = falseWinSlotOdd;
-//  } else if (winRoll <= 72) {
-//    // Partial fail, 10% chance
-//    winState = WINSTATE_LOSS;
-//    slot1_end = slot3_end = falseWinSlot;
-//    slot2_end = falseWinSlotOdd;
-//  }else if (winRoll <= 82) {
-//    // Partial fail, 10% chance
-//    winState = WINSTATE_LOSS;
-//    slot2_end = slot3_end = falseWinSlot;
-//    slot1_end = falseWinSlotOdd;
-//  } else {
-//    // Total fail, 18% chance
-//    winState = WINSTATE_LOSS;
-//    slot1_end = falseWinSlot;
-//    slot2_end = falseWinSlotOdd;
-//    slot3_end = random(0,6);
-//  }
+//void doWinState(){
+//  //based on win state do sounds, fire, etc.
+//  switch (winState) {
+//    case WINSTATE_NYAN: {
+//      // Start lights thread, start playing nyan cat, start fire thread, wait til both nyancat and fire are done
+//      // Do Lights in a thread
+//      int lightThreadId = -1;//threads.addThread(doLights);
 //
-//  // new shorter rolling logic
-//  int rollsBeforeStopping = 4;
-//  int i = 0;
+//      // Sound: Nyancat. This occasionally gets skipped. Some weird timing thing? wait til it starts playing.
+////      playSound("nyan16.wav");
 //
-//  // Want to make sure we don't get a slot rolling the same thing twice, looks like it doesn't update
-//  while(i < rollsBeforeStopping){
-//    int slot1_new = slot1_current;
-//    int slot2_new = slot2_current;
-//    int slot3_new = slot3_current;
-//    
-//    while (slot1_new == slot1_current){
-//      slot1_new = random(0,6);
-//    }
-//    
-//    while (slot2_new == slot2_current){
-//      slot2_new = random(0,6);
-//    }
-//
-//    while (slot3_new == slot3_current){
-//      slot3_new = random(0,6);
-//    }
-//
-//    bmpDraw(images[slot1_new], 0, 0, tft);
-//    bmpDraw(images[slot2_new], 0, 0, tft2);
-//    bmpDraw(images[slot3_new], 0, 0, tft3);
-//
-//    slot1_current = slot1_new;
-//    slot2_current = slot2_new;
-//    slot3_current = slot3_new;
-//
-//    i++;
-//  }
-//
-//  slot1_current = slot1_end;
-//  slot2_current = slot2_end;
-//  slot3_current = slot3_end;
-//
-//  delay(10);
-//  
-//  while(playWav1.isPlaying()){
-//    Serial.println("Waiting for rstop16 audio to finish!");
-//    delay(10);
-//  }
-//}
-
-void doWinState(){
-  //based on win state do sounds, fire, etc.
-  switch (winState) {
-    case WINSTATE_NYAN: {
-      Serial.println("doWinState nyan");
-      // Start lights thread, start playing nyan cat, start fire thread, wait til both nyancat and fire are done
-
-      // Do Lights in a thread
-      int lightThreadId = -1;//threads.addThread(doLights);
-
-      // Sound: Nyancat. This occasionally gets skipped. Some weird timing thing? wait til it starts playing.
-//      playSound("nyan16.wav");
-
-      // Do the fire. Might need to swap to clock watching
-      int fireThreadId = -1;// threads.addThread(doFire);
-
-      // Wait for nyancat to finish playing, then kill the lights thread
-//      while(playWav1.isPlaying()){// || threads.getState(fireThreadId) == Threads::RUNNING){
-//        Serial.println("Waiting for nyancat to finish playing or fire to finish");
-//      }
-
-//      threads.kill(lightThreadId);
-      
-      break;
-    }
-    case WINSTATE_TENTACLE: {
-      Serial.println("doWinState tentacle");
-      // Change lights, start scream sound, start tentacle thread, start fire thread, wait til both tentacle and fire are done
-
-      // LEDs: green
-      doLights();
-
-      // Sound: person screaming
-//      playSound("scream16.wav");
-  
-      // Wave the tentacle
-      int tentacleThreadId = -1;//threads.addThread(doTentacle);
-
-//      while(threads.getState(tentacleThreadId) == Threads::RUNNING) {
-//        Serial.println("Waiting for tentacle or fire thread");
-//      }
-
-      //fire: all at once
-      doFire();
-        
-      break;
-    }
-    case WINSTATE_COIN:
-      Serial.println("doWinState coin");
-      // Change lights, start coin sound + 1up sound, do fire, do coin
-
-      // LEDs: Yellow
-      doLights();
-
-      //TODO: sound: mario 1up/coin
-//      playSound("coin16.wav");
-      
-      // Dispense a coin
-      doCoin();
-
-//      delay(10);
-//      while(playWav1.isPlaying()){
-//        delay(10);
-//      }
-//
-//      playSound("1up16.wav");
+//      // Do the fire. Might need to swap to clock watching
+//      int fireThreadId = -1;// threads.addThread(doFire);
+////      threads.kill(lightThreadId);
 //      
-//      delay(10);
-//      while(playWav1.isPlaying()){
-//        delay(10);
-//      }
-
-      // fire: 1-3-2-4-all
-      doFire();
-      
-      break;
-    case WINSTATE_FIRE:
-      Serial.println("doWinState fire");
-      // Change lights, start playing sound, do fire, wait til sound is finished
-      
-      // LEDs: Red
-      doLights();
-
-      // sound: highway to hell
-//      playSound("hth16.wav");
-      
-      doFire();
-
-      break;
-    case WINSTATE_CHEESY:
-      Serial.println("doWinState cheesy");
-      // Change lights, start playing sound, do fire
-      
-      // LEDs: orange
-      doLights();
-      
-      // Sound: cheesy poofs
-//      playSound("cheesy16.wav");
-
-      // no fire
-      doFire();
-
-      break;
-    case WINSTATE_PINCHY:
-      Serial.println("doWinState pinchy");
-      
-      // LEDs: Red
-      doLights();
-      
-      // Sound: PINCHAY
-//      playSound("pinchy16.wav");
-
-      // fire all 4
-      doFire();
-      
-      break;
-    case WINSTATE_SETH: {
-      Serial.println("doWinState Seth");
-      //todo: add seth win
-//      playSound("seth16.wav");
-
-      delay(1500);
-
-      //todo: threaded rainbow colours
-      int lightThreadId = -1;//threads.addThread(doLights);
-
-      //todo: threaded fire
-      int fireThreadId = -1;//threads.addThread(doFire);
-
-      // Wait for nyancat to finish playing, then kill the lights thread
-//      while(playWav1.isPlaying()){
-//        Serial.println("Waiting for nyancat to finish playing or fire to finish");
+//      break;
+//    }
+//    case WINSTATE_TENTACLE: {
+//      // Change lights, start scream sound, start tentacle thread, start fire thread, wait til both tentacle and fire are done
+//
+//      // LEDs: green
+//      doLights();
+//
+//      // Sound: person screaming
+////      playSound("scream16.wav");
+//  
+//      // Wave the tentacle
+//      int tentacleThreadId = -1;//threads.addThread(doTentacle);
+//
+////      while(threads.getState(tentacleThreadId) == Threads::RUNNING) {
+////        Serial.println("Waiting for tentacle or fire thread");
+////      }
+//
+//      //fire: all at once
+//      doFire();
+//        
+//      break;
+//    }
+//    case WINSTATE_COIN:
+//      // Change lights, start coin sound + 1up sound, do fire, do coin
+//
+//      // LEDs: Yellow
+//      doLights();
+//
+//      //TODO: sound: mario 1up/coin
+////      playSound("coin16.wav");
+//      
+//      // Dispense a coin
+//      doCoin();
+//
+////      delay(10);
+////      while(playWav1.isPlaying()){
+////        delay(10);
+////      }
+////
+////      playSound("1up16.wav");
+////      
+////      delay(10);
+////      while(playWav1.isPlaying()){
+////        delay(10);
+////      }
+//
+//      // fire: 1-3-2-4-all
+//      doFire();
+//      
+//      break;
+//    case WINSTATE_FIRE:
+//      // Change lights, start playing sound, do fire, wait til sound is finished
+//      
+//      // LEDs: Red
+//      doLights();
+//
+//      // sound: highway to hell
+////      playSound("hth16.wav");
+//      
+//      doFire();
+//
+//      break;
+//    case WINSTATE_CHEESY:
+//      // Change lights, start playing sound, do fire
+//      
+//      // LEDs: orange
+//      doLights();
+//      
+//      // Sound: cheesy poofs
+////      playSound("cheesy16.wav");
+//
+//      // no fire
+//      doFire();
+//
+//      break;
+//    case WINSTATE_PINCHY:
+//      // LEDs: Red
+//      doLights();
+//      
+//      // Sound: PINCHAY
+////      playSound("pinchy16.wav");
+//
+//      // fire all 4
+//      doFire();
+//      
+//      break;
+//    case WINSTATE_SETH: {
+//      //todo: add seth win
+////      playSound("seth16.wav");
+//
+//      delay(1500);
+//
+//      //todo: threaded rainbow colours
+//      int lightThreadId = -1;//threads.addThread(doLights);
+//
+//      //todo: threaded fire
+//      int fireThreadId = -1;//threads.addThread(doFire);
+//
+//      // Wait for nyancat to finish playing, then kill the lights thread
+////      while(playWav1.isPlaying()){
+////        Serial.println("Waiting for nyancat to finish playing or fire to finish");
+////      }
+////
+////      threads.kill(lightThreadId);
+//
+//      for(int i = 0; i < 5; i++){
+////        playSound("coin16.wav");
+//        doCoin();
+//        delay(200);
 //      }
 //
-//      threads.kill(lightThreadId);
-
-      for(int i = 0; i < 5; i++){
-//        playSound("coin16.wav");
-        doCoin();
-        delay(200);
-      }
-
-//      playSound("1up16.wav");
-
-      break;
-    }
-    case WINSTATE_LOSS:
-//      playSound("loss16.wav");
-      doLights();
-      break;
-    default: 
-      break;
-  } 
-}
+////      playSound("1up16.wav");
+//
+//      break;
+//    }
+//    case WINSTATE_LOSS:
+////      playSound("loss16.wav");
+//      doLights();
+//      break;
+//    default: 
+//      break;
+//  } 
+//}
 
 //TODO: Set everything back to normal state for another round. are we missing anything?
 void resetState(){
@@ -483,29 +265,6 @@ void resetState(){
   // Make sure fire is off
 //  doFire();
 }
-
-// Stops any existing sound, makes sure the file is closed, then keeps attempting to play the sound until it actually starts
-//void playSound(char* filename){
-//  playWav1.stop();
-//  delay(10); //TODO: Might not need this
-//  
-//  while(!playWav1.isPlaying()){
-//    if(audioFile){
-//      Serial.println("closing redundant audioFile inside while loop");
-//      audioFile.close();
-//    }
-//    
-//    if(audioFile = sd2.open(filename)){
-//      Serial.println("Playing: ");
-//      Serial.print(filename);
-//      playWav1.play(audioFile);
-//    } else {
-//      Serial.println("problem opening sound file");
-//    }
-//
-//    delay(10);
-//  }
-//}
 
 // Do the fire. Might need to swap to clock watching
 void doFire(){
@@ -775,34 +534,84 @@ uint32_t Wheel(byte WheelPos) {
   }
 }
 
-// Makes the tentacle pop out, wiggle around, and go away
-//void doTentacle(){
-//  Serial.println("About to do tentacle");
-
-//  tentacleServo.write(0); 
-//  threads.delay(500);
-//
-//  tentacleServo.write(45); 
-//  threads.delay(300);
-//
-//  tentacleServo.write(0); 
-//  threads.delay(300);
-//
-//  tentacleServo.write(45); 
-//  threads.delay(300);
-//
-//  tentacleServo.write(0); 
-//  threads.delay(500);
-//  
-//  tentacleServo.write(90);
-//}
-
-
-
 // Triggers the coin dispenser to dispense a coin
 void doCoin(){
-//  Serial.println("About to do coin");
   coinServo.write(30); 
   delay(200);
   coinServo.write(90);
+}
+
+
+//protothreads, experimental
+int activeTentacle = 0;
+int activeLights = 0;
+
+/* This function toggles the LED after 'interval' ms passed */
+static int protothread1(struct pt *pt) {
+  static unsigned long timestamp = 0;
+  PT_BEGIN(pt);
+  while(1) { // never stop 
+    Serial.print("PT1");
+    /* each time the function is called the second boolean
+    *  argument "millis() - timestamp > interval" is re-evaluated
+    *  and if false the function exits after that. */
+      PT_WAIT_UNTIL(pt, activeTentacle == 1);
+      Serial.print("PT1 PART A");
+      tentacleServo.write(0); 
+      timestamp = millis(); // take a new timestamp
+      
+      PT_WAIT_UNTIL(pt, activeTentacle == 1 && millis() - timestamp > 500);
+      Serial.print("PT1 PART B");
+      tentacleServo.write(45); 
+      timestamp = millis(); // take a new timestamp
+      
+      PT_WAIT_UNTIL(pt, activeTentacle == 1 && millis() - timestamp > 300);
+      Serial.print("PT1 PART C");
+      tentacleServo.write(0); 
+      timestamp = millis(); // take a new timestamp
+      
+      PT_WAIT_UNTIL(pt, activeTentacle == 1 && millis() - timestamp > 300);
+      tentacleServo.write(45); 
+      timestamp = millis(); // take a new timestamp
+      
+      PT_WAIT_UNTIL(pt, activeTentacle == 1 && millis() - timestamp > 300);
+      tentacleServo.write(0); 
+      timestamp = millis(); // take a new timestamp
+      
+      PT_WAIT_UNTIL(pt, activeTentacle == 1 && millis() - timestamp > 500);
+      tentacleServo.write(90); 
+      timestamp = millis(); // take a new timestamp
+      activeTentacle = 0;
+  }
+
+  PT_END(pt);
+}
+
+static int protothread2(struct pt *pt) {
+  static unsigned long timestamp = 0; 
+  static uint16_t i;
+  static uint16_t j = 0;
+  
+  PT_BEGIN(pt);
+  while(1) { // never stop 
+//    Serial.print("PT2");
+    /* each time the function is called the second boolean
+    *  argument "millis() - timestamp > interval" is re-evaluated
+    *  and if false the function exits after that. */
+    PT_WAIT_UNTIL(pt, activeLights == 1);
+    timestamp = millis();
+    if (j > 255){
+      j = 0;
+    }
+
+    for(i=0; i< strip.numPixels(); i++) {
+      strip.setPixelColor(i, Wheel(((i * 256 / strip.numPixels()) + j) & 255));
+    }
+    
+    strip.show();
+    j += 10;
+    PT_WAIT_UNTIL(pt, activeLights == 1 && millis() - timestamp > 10);
+    timestamp = millis();
+  }
+  PT_END(pt);
 }
