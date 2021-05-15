@@ -314,7 +314,7 @@ class Game:
             index = self.imgpaths.index(self.wins)
             if index == 0:
                 self.cheesy.play()
-                self.sendandwait(b"CHEESE\n")
+                self.sendandwait(0x00)
                 #SEND CHEESY CMD AND WAIT for both thread and play to stop
                 #sendandwait(cheesy)
             elif index == 1:
@@ -345,16 +345,18 @@ class Game:
     def sendandwait(self, cmd):
         #SEND CMD AND WAIT for both thread and play to stop
         ser.write(cmd) #b"Hello from Raspiberry Pi!\n"
-        
+        #TODO(mje): Might need to make sure we're flushing our buffer whenever we send something here
         while pygame.mixer.get_busy():
             pass
         
         while not (ser.in_waiting > 0):
             pass
             
-        line = ser.readline().decode('utf-8').rstrip()
+        int byte = ser.read();
+        #TODO: is this valid?
+        #line = ser.readline().decode('utf-8').rstrip()
         print("Arduino finished!")
-        print(line)
+        print(byte)
         
 # probably dont need
 def help():
