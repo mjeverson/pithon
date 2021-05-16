@@ -280,31 +280,56 @@ class Game:
             if index == 0:
                 self.nyan.play()
                 self.sendandwait(0x00)
+                ser.write(0x09) #maybe a reset instead, no need to wait?
             elif index == 1:
                 self.scream.play()
                 self.sendandwait(0x01)
+                ser.write(0x09)
             elif index == 2:
                 self.coin.play()
                 self.sendandwait(0x02)
+                self.oneup.play()
+                
+                while pygame.mixer.get_busy():
+                    pass
+                
+                ser.write(0x09)
             elif index == 3:
                 self.hth.play()
                 self.sendandwait(0x03)
+                ser.write(0x09)
             elif index == 4:
                 self.cheesy.play()
                 self.sendandwait(0x04)
+                ser.write(0x09)
             elif index == 5:
                 self.pinchy.play()
                 self.sendandwait(0x05)
+                ser.write(0x09)
             elif index == 6:
                 self.jackpot.play()
-                self.sendandwait(0x06)
+                self.sendandwait(0x06) # Do all the lights and fire
+                
+                ser.write(0x09)
+                # play the coin sound and dispense a coin 5 times
+                for x in range(5):
+                    self.coin.play()
+                    while pygame.mixer.get_busy():
+                        pass
+
+                self.oneup.play()
+                while pygame.mixer.get_busy():
+                    pass
+
+                ser.write(0x09)
         else:
             self.loss.play()
             self.sendandwait(0x00)
+            ser.write(0x09)
     
     def sendandwait(self, cmd):
-        #SEND CMD AND WAIT for both thread and play to stop
-        ser.write(cmd) #b"Hello from Raspiberry Pi!\n"
+        #SEND CMD AND WAIT for both thread and play to stop, eg. #b"Hello from Raspiberry Pi!\n"
+        ser.write(cmd) 
         #TODO(mje): Might need to make sure we're flushing our buffer whenever we send something here
         while pygame.mixer.get_busy():
             pass

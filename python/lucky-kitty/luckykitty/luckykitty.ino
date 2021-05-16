@@ -114,6 +114,8 @@ void waitForThread(int threadId) {
   while(threads.getState(threadId) == Threads::RUNNING) {}
 }
 
+//todo: All of these might want to wait until getting a "sound finished" before resetting
+//THINK: only reset when you get a reset command? Or - always wait for RESET cmd when finished?
 /* WIN/LOSS STATES */
 void winNyan() {
   // nyan rainbow colours
@@ -139,6 +141,7 @@ void winTentacle() {
   fireAll();
 
   waitForThread(tentacleThreadId);
+  waitForCommand(CMD_DONE);
 }
 
 void winCoin() {
@@ -149,6 +152,7 @@ void winCoin() {
   // fire: 1-3-2-4-all
   fireSequential(false);
   fireAll();
+  waitForCommand(CMD_DONE);
 }
 
 void winFire() {
@@ -174,12 +178,14 @@ void winFire() {
   delay(2000);
 
   fireAll();
+  waitForCommand(CMD_DONE);
 }
 
 void winCheese() {
   // orange
   setStripColor(255, 36, 0);
   fireOff();
+  waitForCommand(CMD_DONE);
 }
 
 void winJackpot() {
@@ -201,11 +207,14 @@ void winJackpot() {
     doCoin();
     delay(200);
   }
+  
+  waitForCommand(CMD_DONE);
 }
 
 // Fail, dim lights
 void loss() {
   setStripColor(25, 25, 25);
+  Serial.write(CMD_DONE);
   waitForCommand(CMD_DONE);
 }
 
