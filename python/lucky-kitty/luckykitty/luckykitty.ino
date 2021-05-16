@@ -99,7 +99,7 @@ void loop() {
 
   // Reset everything
   resetState();
-  Serial.print(CMD_DONE);
+  Serial.write(CMD_DONE);
 }
 
 /* WAIT HELPERS */
@@ -124,7 +124,7 @@ void winNyan() {
   fireSequential(true);
 
   //todo: Maybe - send a "DONE" signal
-  Serial.print(CMD_DONE);
+  Serial.write(CMD_DONE);
 
   // Wait for the signal that nyancat is done playing
   waitForCommand(CMD_DONE);
@@ -191,7 +191,7 @@ void winJackpot() {
   fireSequential(false);
   fireSequential(true);
 
-  Serial.print(CMD_DONE);
+  Serial.write(CMD_DONE);
   waitForCommand(CMD_DONE);
 
   threads.kill(lightThreadId);
