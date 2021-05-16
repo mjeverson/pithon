@@ -338,15 +338,19 @@ class Game:
         print("Arduino finished!")
         print(byte)
         
-# probably dont need
 def help():
     print("Lucky Kitty help:")
     print("Options:")
     print("-h, --help        display this help message")
     print("-v, --version     display game version")
+    print("-f, --fullscreen  run in fullscreen mode")
+    print("-p, --pi          run in raspberry pi mode")
     print("Contact: everson.mike@gmail.com")
 
 if __name__ == "__main__":
+    fullscreen = False
+    pi = False
+    
     try:
         long = ["help", "version"]
         opts = getopt(argv[1:], "hv", long)[0]
@@ -360,19 +364,28 @@ if __name__ == "__main__":
         if opt in ("-v", "--version"):
             print("Lucky Kitty - version: "+ VERSION)
             exit()
+        if opt in ("-f", "--fullscreen"):
+            fullscreen = True
+        if opt in ("-p", "--pi"):
+            pi = True
          
     # Setup serial communication
     #TODO(MJE): How will this work when we boot up the pi cold, will we need to wait?
     # COMMENT OUT ON OSX FOR TESTING
-    # PI
-#     ser = serial.Serial('/dev/ttyUSB0', 9600, timeout=5)
-    # OSX
-#     ser = serial.Serial('/dev/cu.usbserial-A603GDYX', 9600, timeout=5)
+#     if pi
+#         ser = serial.Serial('/dev/ttyUSB0', 9600, timeout=5)
+#     else        
+#         ser = serial.Serial('/dev/cu.usbserial-A603GDYX', 9600, timeout=5)
 #     ser.flush()
             
     # pygame init, set display
     pygame.init()
-    screen = pygame.display.set_mode([640, 480], 0, 24)
+    
+    if not fullscreen:
+        screen = pygame.display.set_mode([640, 480], 0, 24)
+    else:
+        screen = pygame.display.set_mode([640, 480], pygame.FULLSCREEN)
+
     pygame.display.set_caption("Lucky Kitty MkII")
     pygame.mouse.set_visible(False)
     
