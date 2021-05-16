@@ -202,7 +202,7 @@ void winJackpot() {
 
   threads.kill(lightThreadId);
 
-  //todo: dispense 5 coins
+  // dispense 5 coins
   for(int i = 0; i < 5; i++){
     doCoin();
     delay(200);

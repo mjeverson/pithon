@@ -15,11 +15,8 @@
 import pygame
 from pygame.locals import *
 from random import randrange
-import sys
 from sys import argv
 from getopt import getopt, GetoptError
-import time
-import os
 
 ##new lucky kitty specific stuff
 import serial
@@ -312,7 +309,7 @@ class Game:
                 
                 ser.write(0x09)
                 # play the coin sound and dispense a coin 5 times
-                for x in range(5):
+                for _ in range(5):
                     self.coin.play()
                     while pygame.mixer.get_busy():
                         pass
