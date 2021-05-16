@@ -156,6 +156,7 @@ class Game:
         szamb = len(rollbf)-1
         szamc = len(rollcf)-1
         
+        #TODO: this is probably about where we need to do the slowdown
         while szamc > 2:
             self.screen.fill([0, 0, 0])
             self.screen.blit(self.background, (0, 0))
@@ -305,7 +306,8 @@ class Game:
                 ser.write(0x09)
             elif index == 6:
                 self.jackpot.play()
-                self.sendandwait(0x06) # Do all the lights and fire
+                # Do all the lights and fire
+                self.sendandwait(0x06) 
                 
                 ser.write(0x09)
                 # play the coin sound and dispense a coin 5 times
@@ -324,8 +326,8 @@ class Game:
             self.sendandwait(0x00)
             ser.write(0x09)
     
+    # Sends a command and waits for both thread and play to stop, eg. #b"Hello from Raspiberry Pi!\n"
     def sendandwait(self, cmd):
-        #SEND CMD AND WAIT for both thread and play to stop, eg. #b"Hello from Raspiberry Pi!\n"
         ser.write(cmd) 
         #TODO(mje): Might need to make sure we're flushing our buffer whenever we send something here
         while pygame.mixer.get_busy():
