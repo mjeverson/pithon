@@ -23,22 +23,7 @@ import os
 
 ##new lucky kitty specific stuff
 import serial
-
-# if __name__ == '__main__':
-#     ser = serial.Serial('/dev/ttyUSB0', 9600, timeout=5)
-#     ser.flush()
-    
-#     while True:
-#         if ser.in_waiting > 0:
-#             line = ser.readline().decode('utf-8').rstrip()
-#             print(line)
-
-#     while True:
-#         ser.write(b"Hello from Raspiberry Pi!\n")
-#         line = ser.readline().decode('utf-8').rstrip()
-#         print(line)
-#         time.sleep(1)
-##End lucky kitty serial stuff
+from gpiozero import Button
 
 VERSION = "0.1"
 
@@ -50,6 +35,8 @@ class Game:
         self.show = []
         
         self.screen = screen
+        # COMMENT OUT ON OSX FOR TESTING
+#         self.handle = Button(4)
         
         self.bsound = pygame.mixer.Sound("data/sounds/CLICK10A.WAV")
         self.oneup = pygame.mixer.Sound("_assets/_sounds/1up16.wav")
@@ -75,18 +62,9 @@ class Game:
         self.imgcheese = pygame.image.load(self.imgpaths[4])
         self.imgpinchy = pygame.image.load(self.imgpaths[5])
         self.imgjackpot = pygame.image.load(self.imgpaths[6])
-#         self.imgeight = pygame.image.load(self.imgpaths[7])
         
-        img = [self.imgnyan, self.imgtent, self.imgcoin, self.imgfire, self.imgcheese, self.imgpinchy, self.imgjackpot]
-#         img.append(self.imgnyan)
-#         img.append(self.imgtent)
-#         img.append(self.imgcoin)
-#         img.append(self.imgfire)
-#         img.append(self.imgcheese)
-#         img.append(self.imgpinchy)
-#         img.append(self.imgjackpot)
-#         img.append(self.imgeight)
-        
+        self.img = [self.imgnyan, self.imgtent, self.imgcoin, self.imgfire, self.imgcheese, self.imgpinchy, self.imgjackpot]
+
         # Randomize and update the images without actually doing the roll 
         self.randi()
         self.screen.fill([0, 0, 0])
@@ -97,44 +75,31 @@ class Game:
         
         # mainloop
         while True:
-            ##todo(mje): OR lever has been pulled
+            # COMMENT OUT ON OSX FOR TESTING
+#             if handle.is_pressed:
+#                 self.playgame()
+#             else:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     exit()
-                    
                 if event.type == pygame.KEYDOWN:
                     self.bsound.play()
                     if event.key == pygame.K_LEFT and self.keys == 1:
-                        self.randi()
-                        self.roll(img)
-                        #reused
-                        self.screen.blit(self.background, (0, 0))
-                        self.drawl()
-                        self.screen.blit(self.windowlayer, (0, 0))
-                        #/reused
-                        pygame.display.update()
-                        self.winner()
-                        
-#                     if event.key == pygame.K_F1:
-#                         if self.keys == 1:
-#                             self.keys = 0
-#                             self.menu = "h"
-#                         elif self.keys == 0:
-#                             self.keys = 1
-#                             self.menu = "n"
-#                             
-#                     if event.key == pygame.K_RETURN:
-#                         self.keys = 0
-#                         self.menu = "e"
+                        self.playgame()
 
-            # Extra key support
-#             if self.keys == 0 and self.menu == "h":
-#                 self.helpmenu()
-#             if self.keys == 0 and self.menu == "e":
-#                 exit()
-                
+    def playgame(self):
+        self.randi()
+        self.roll(self.img)
+        #reused
+        self.screen.blit(self.background, (0, 0))
+        self.drawl()
+        self.screen.blit(self.windowlayer, (0, 0))
+        #/reused
+        pygame.display.update()
+        self.winner()
 
-    # Does the actual scrolling thing?
+
+    # Does the actual scrolling thing
     #Todo(mje): Make it so the top and bottom images are partially cut off
     # Make the window border the full size we want it to be,
     # or else draw it manually
@@ -181,14 +146,14 @@ class Game:
         rollcf = []
         rollcf.append(img[self.imgpaths.index(self.show[6])-1])
         rollcf.append(img[self.imgpaths.index(self.show[7])-1])
-        rollcf.append(img[self.imgpaths.index(self.show[0])-1])
+        rollcf.append(img[self.imgpaths.index(self.show[8])-1])
         while szam <= rollc-3:
             rollcf.append(img[randrange(0, 7)])
             szam = szam +1
 
         rollcf.append(img[self.imgpaths.index(self.showold[6])-1])
         rollcf.append(img[self.imgpaths.index(self.showold[7])-1])
-        rollcf.append(img[self.imgpaths.index(self.showold[0])-1])
+        rollcf.append(img[self.imgpaths.index(self.showold[8])-1])
         
         szama = len(rollaf)-1
         szamb = len(rollbf)-1
@@ -247,17 +212,19 @@ class Game:
         self.screen.blit(pygame.image.load(self.show[5]), (165, 302))
         self.screen.blit(pygame.image.load(self.show[6]), (295, 46))
         self.screen.blit(pygame.image.load(self.show[7]), (295, 174))
-#         self.screen.blit(pygame.image.load(self.show[8]), (295, 302))
+        self.screen.blit(pygame.image.load(self.show[8]), (295, 302))
 
     # random images
     #todo(mje): Look at this logic more. is this just randomizing all images at all times?
     # Then comparing? May need a better approach for probabilities
     def randi(self):
-        self.showold = []
         if len(self.show) > 1:
             self.showold = self.show
         else:
-            self.showold = []#"data/img/8.png", "data/img/8.png", "data/img/8.png", "data/img/8.png", "data/img/8.png", "data/img/8.png", "data/img/8.png", "data/img/8.png", "data/img/8.png"]
+            self.showold = []
+            
+        self.show = []    
+            
         ran = {}
         ran[0] = randrange(1, 335)
         ran[1] = randrange(1, 335)
@@ -267,14 +234,12 @@ class Game:
         ran[5] = randrange(1, 335)
         ran[6] = randrange(1, 335)
         ran[7] = randrange(1, 335)
-#         ran[8] = randrange(1, 335)
-        self.show = []
-        #todo(mje): Okay so this is where we decide what img to show and what outcome we get with likelihoods
+        ran[8] = randrange(1, 335)
+
         for n in ran:
-#Uncomment this line and comment the rest to test a specific outcome
+            #todo(mje): Okay so this is where we decide what img to show and what outcome we get with likelihoods
+            #Uncomment this line and comment the rest to test a specific outcome
 #             self.show.append(self.imgpaths[0])
-#             if 1 <= ran[n] <= 5:
-#                 self.show.append(self.imgpaths[7])
             if 1 <= ran[n] <= 15:
                 self.show.append(self.imgpaths[6])
             elif 16 <= ran[n] <= 30:
@@ -308,7 +273,6 @@ class Game:
         
         self.check()
         pygame.display.update()
-        
             
         #TODO: Get me the index, see if it matches coin or w/e. Some struct
         if self.wins is not None:
@@ -334,9 +298,6 @@ class Game:
             elif index == 6:
                 self.jackpot.play()
                 self.sendandwait(0x06)
-#             elif index == 7:
-#                 self.coin.play()
-#                 self.sendandwait(0x02)
         else:
             self.loss.play()
             self.sendandwait(0x00)
@@ -352,8 +313,6 @@ class Game:
             pass
             
         byte = ser.read(1);
-        #TODO: is this valid?
-        #line = ser.readline().decode('utf-8').rstrip()
         print("Arduino finished!")
         print(byte)
         
@@ -381,12 +340,13 @@ if __name__ == "__main__":
             exit()
          
     # Setup serial communication
-    #TODO(MJE): How will this work when we boot up?
+    #TODO(MJE): How will this work when we boot up the pi cold, will we need to wait?
+    # COMMENT OUT ON OSX FOR TESTING
     # PI
 #     ser = serial.Serial('/dev/ttyUSB0', 9600, timeout=5)
     # OSX
-    ser = serial.Serial('/dev/cu.usbserial-A603GDYX', 9600, timeout=5)
-    ser.flush()
+#     ser = serial.Serial('/dev/cu.usbserial-A603GDYX', 9600, timeout=5)
+#     ser.flush()
             
     # pygame init, set display
     pygame.init()
