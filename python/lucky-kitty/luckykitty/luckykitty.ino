@@ -17,7 +17,18 @@
 #define SOL2 4
 #define SOL3 7
 #define SOL4 23
-int sols[] = [SOL1, SOL2, SOL3, SOL4];
+#define NUM_SOLS 4
+int sols[NUM_SOLS] = {SOL1, SOL2, SOL3, SOL4};
+
+#define WIN_NYAN 0x00
+#define WIN_TENTACLE 0x01
+#define WIN_COIN 0x02
+#define WIN_FIRE 0x03
+#define WIN_CHEESE 0x04
+#define WIN_PINCHY 0x05
+#define WIN_JACKPOT 0x06
+#define LOSS 0x07
+#define CMD_DONE 0x09
 
 // Valid output pins: //2-10, 14, 16-17, 20-23, 29-30, 35-38
 #define TENTACLE_SERVO 8
@@ -29,14 +40,12 @@ Adafruit_NeoPixel strip = Adafruit_NeoPixel(NUM_PIXELS, PIXEL, NEO_GRBW + NEO_KH
 PWMServo tentacleServo;
 PWMServo coinServo;  
 
-String cmdDone = 0x09;
-
 // Get this party started!
 void setup() {  
   Serial.begin(9600);
 
   // Set up solenoid
-  for (int i = 0; i <= sizeof(sols); i++) {
+  for (int i = 0; i < NUM_SOLS; i++) {
     pinMode(sols[i], OUTPUT);
   }
 
@@ -57,30 +66,29 @@ void setup() {
 void loop() {
   // wait until we get a code from the pi. 
   if (Serial.available() > 0){
-    int b = Serial.read();
-    switch (b) {
-      case 0x00; 
+    switch (Serial.read()) {
+      case WIN_NYAN:
         winNyan();
         break;
-      case 0x01:
+      case WIN_TENTACLE:
         winTentacle();
         break;
-      case 0x02:
+      case WIN_COIN:
         winCoin();
         break;
-      case 0x03:
+      case WIN_FIRE:
         winFire();
         break;
-      case 0x04:
+      case WIN_CHEESE:
         winCheese();
         break;
-      case 0x05:
+      case WIN_PINCHY:
         // Red
         setStripColor(255, 0, 0);
         // fire all 4
         fireAll();
         break;
-      case 0x06:
+      case WIN_JACKPOT:
         winJackpot();
         break;
       default:
@@ -91,14 +99,13 @@ void loop() {
 
   // Reset everything
   resetState();
-  Serial.print(cmdDone);
+  Serial.print(CMD_DONE);
 }
 
 /* WAIT HELPERS */
-void waitForCommand(String cmd) {
+void waitForCommand(byte cmd) {
   while (Serial.available() == 0) {}
-    int b = Serial.read();
-    if (b != cmd) {
+    if (Serial.read() != cmd) {
       //todo: some sort of error, break and reset?
     }
 }
@@ -117,10 +124,10 @@ void winNyan() {
   fireSequential(true);
 
   //todo: Maybe - send a "DONE" signal
-  Serial.print(cmdDone);
+  Serial.print(CMD_DONE);
 
   // Wait for the signal that nyancat is done playing
-  waitForCommand(cmdDone);
+  waitForCommand(CMD_DONE);
   threads.kill(lightThreadId);
 }
 
@@ -184,8 +191,8 @@ void winJackpot() {
   fireSequential(false);
   fireSequential(true);
 
-  Serial.print(cmdDone);
-  waitForCommand(cmdDone);
+  Serial.print(CMD_DONE);
+  waitForCommand(CMD_DONE);
 
   threads.kill(lightThreadId);
 
@@ -199,7 +206,7 @@ void winJackpot() {
 // Fail, dim lights
 void loss() {
   setStripColor(25, 25, 25);
-  waitForCommand(cmdDone);
+  waitForCommand(CMD_DONE);
 }
 
 void resetState(){
@@ -218,13 +225,13 @@ void resetState(){
 /* FIRE HELPERS */
 // Triggers all four solenoids
 void fireAll(){
-  for (int i = 0; i <= sizeof(sols); i++) {
+  for (int i = 0; i < NUM_SOLS; i++) {
     digitalWrite(sols[i], HIGH);
   }
 
   delay(500);
   
-  for (int i = 0; i <= sizeof(sols); i++) {
+  for (int i = 0; i < NUM_SOLS; i++) {
     digitalWrite(sols[i], LOW);
   }
   delay(250);
@@ -232,7 +239,7 @@ void fireAll(){
 
 // Triggers a  sequential pattern of 1-2-3-4, or reverse
 void fireSequential(boolean reverse){
-  for (int i = 0; i <= sizeof(sols); i++) {
+  for (int i = 0; i < NUM_SOLS; i++) {
     int s = sols[i];
     
     if (reverse){
@@ -248,7 +255,7 @@ void fireSequential(boolean reverse){
 
 // Turns off all fire
 void fireOff(){
-  for (int i = 0; i <= sizeof(sols); i++) {
+  for (int i = 0; i < NUM_SOLS; i++) {
     int s = sols[i];
     digitalWrite(s, LOW);
   }
