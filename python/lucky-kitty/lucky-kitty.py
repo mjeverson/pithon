@@ -98,9 +98,9 @@ class Game:
         pygame.display.update()
         self.winner()
 
-
     # Does the actual scrolling thing
     #Todo(mje): Make it so the top and bottom images are partially cut off
+    #Todo: Make the images roll slower
     # Make the window border the full size we want it to be,
     # or else draw it manually
     def roll(self, img):
@@ -108,7 +108,7 @@ class Game:
         self.reel.play(loops=-1)
         
         # toll time
-        # TODO: is this how long we scroll for?
+        #Todo: understand what this timing actually is
         rolla = randrange(100, 280)
         rollb = randrange(rolla+1, rolla+5)
         rollc = randrange(rollb+1, rollb+5)
