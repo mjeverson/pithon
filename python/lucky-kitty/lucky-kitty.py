@@ -62,30 +62,30 @@ class Game:
         self.reel = pygame.mixer.Sound("_assets/_sounds/reel16.wav")
         self.rstop = pygame.mixer.Sound("_assets/_sounds/rstop16.wav")
         self.scream = pygame.mixer.Sound("_assets/_sounds/scream16.wav")
-        self.seth = pygame.mixer.Sound("_assets/_sounds/seth16.wav")
+        self.jackpot = pygame.mixer.Sound("_assets/_sounds/seth16.wav")
         self.background = pygame.image.load("data/img/bg.png")
 #         self.rlayer = pygame.image.load("data/img/rlayer.png")
 # Maybe change this to just be the one black line across
         self.windowlayer = pygame.image.load("data/img/windowlayer.png")
-        self.imgpaths = ["_assets/_images/png/cheesef.png", "_assets/_images/png/coinf.png", "_assets/_images/png/firef.png", "_assets/_images/png/nyanf.png", "_assets/_images/png/pinchyf.png", "_assets/_images/png/sethf.png", "_assets/_images/png/tentf.png", "data/img/8.png"]
-        self.imgone = pygame.image.load(self.imgpaths[0])
-        self.imgtwo = pygame.image.load(self.imgpaths[1])
-        self.imgthree = pygame.image.load(self.imgpaths[2])
-        self.imgfour = pygame.image.load(self.imgpaths[3])
-        self.imgfive = pygame.image.load(self.imgpaths[4])
-        self.imgsix = pygame.image.load(self.imgpaths[5])
-        self.imgseven = pygame.image.load(self.imgpaths[6])
-        self.imgeight = pygame.image.load(self.imgpaths[7])
+        self.imgpaths = ["_assets/_images/png/nyanf.png", "_assets/_images/png/tentf.png", "_assets/_images/png/coinf.png", "_assets/_images/png/firef.png", "_assets/_images/png/cheesef.png", "_assets/_images/png/pinchyf.png", "_assets/_images/png/sethf.png"]
+        self.imgnyan = pygame.image.load(self.imgpaths[0])
+        self.imgtent = pygame.image.load(self.imgpaths[1])
+        self.imgcoin = pygame.image.load(self.imgpaths[2])
+        self.imgfire = pygame.image.load(self.imgpaths[3])
+        self.imgcheese = pygame.image.load(self.imgpaths[4])
+        self.imgpinchy = pygame.image.load(self.imgpaths[5])
+        self.imgjackpot = pygame.image.load(self.imgpaths[6])
+#         self.imgeight = pygame.image.load(self.imgpaths[7])
         
-        img = []
-        img.append(self.imgone)
-        img.append(self.imgtwo)
-        img.append(self.imgthree)
-        img.append(self.imgfour)
-        img.append(self.imgfive)
-        img.append(self.imgsix)
-        img.append(self.imgseven)
-        img.append(self.imgeight)
+        img = [self.imgnyan, self.imgtent, self.imgcoin, self.imgfire, self.imgcheese, self.imgpinchy, self.imgjackpot]
+#         img.append(self.imgnyan)
+#         img.append(self.imgtent)
+#         img.append(self.imgcoin)
+#         img.append(self.imgfire)
+#         img.append(self.imgcheese)
+#         img.append(self.imgpinchy)
+#         img.append(self.imgjackpot)
+#         img.append(self.imgeight)
         
         # Randomize and update the images without actually doing the roll 
         self.randi()
@@ -115,22 +115,23 @@ class Game:
                         pygame.display.update()
                         self.winner()
                         
-                    if event.key == pygame.K_F1:
-                        if self.keys == 1:
-                            self.keys = 0
-                            self.menu = "h"
-                        elif self.keys == 0:
-                            self.keys = 1
-                            self.menu = "n"
-                            
-                    if event.key == pygame.K_RETURN:
-                        self.keys = 0
-                        self.menu = "e"
+#                     if event.key == pygame.K_F1:
+#                         if self.keys == 1:
+#                             self.keys = 0
+#                             self.menu = "h"
+#                         elif self.keys == 0:
+#                             self.keys = 1
+#                             self.menu = "n"
+#                             
+#                     if event.key == pygame.K_RETURN:
+#                         self.keys = 0
+#                         self.menu = "e"
 
-            if self.keys == 0 and self.menu == "h":
-                self.helpmenu()
-            if self.keys == 0 and self.menu == "e":
-                exit()
+            # Extra key support
+#             if self.keys == 0 and self.menu == "h":
+#                 self.helpmenu()
+#             if self.keys == 0 and self.menu == "e":
+#                 exit()
                 
 
     # Does the actual scrolling thing?
@@ -153,7 +154,7 @@ class Game:
         rollaf.append(img[self.imgpaths.index(self.show[1])-1])
         rollaf.append(img[self.imgpaths.index(self.show[2])-1])
         while szam <= rolla-3:
-            rollaf.append(img[randrange(0, 8)])
+            rollaf.append(img[randrange(0, 7)])
             szam = szam + 1
         rollaf.append(img[self.imgpaths.index(self.showold[0])-1])
         rollaf.append(img[self.imgpaths.index(self.showold[1])-1])
@@ -168,7 +169,7 @@ class Game:
         rollbf.append(img[self.imgpaths.index(self.show[4])-1])
         rollbf.append(img[self.imgpaths.index(self.show[5])-1])
         while szam <= rollb-3:
-            rollbf.append(img[randrange(0, 8)])
+            rollbf.append(img[randrange(0, 7)])
             szam = szam +1
         rollbf.append(img[self.imgpaths.index(self.showold[3])-1])
         rollbf.append(img[self.imgpaths.index(self.showold[4])-1])
@@ -180,14 +181,14 @@ class Game:
         rollcf = []
         rollcf.append(img[self.imgpaths.index(self.show[6])-1])
         rollcf.append(img[self.imgpaths.index(self.show[7])-1])
-        rollcf.append(img[self.imgpaths.index(self.show[8])-1])
+        rollcf.append(img[self.imgpaths.index(self.show[0])-1])
         while szam <= rollc-3:
-            rollcf.append(img[randrange(0, 8)])
+            rollcf.append(img[randrange(0, 7)])
             szam = szam +1
 
         rollcf.append(img[self.imgpaths.index(self.showold[6])-1])
         rollcf.append(img[self.imgpaths.index(self.showold[7])-1])
-        rollcf.append(img[self.imgpaths.index(self.showold[8])-1])
+        rollcf.append(img[self.imgpaths.index(self.showold[0])-1])
         
         szama = len(rollaf)-1
         szamb = len(rollbf)-1
@@ -246,7 +247,7 @@ class Game:
         self.screen.blit(pygame.image.load(self.show[5]), (165, 302))
         self.screen.blit(pygame.image.load(self.show[6]), (295, 46))
         self.screen.blit(pygame.image.load(self.show[7]), (295, 174))
-        self.screen.blit(pygame.image.load(self.show[8]), (295, 302))
+#         self.screen.blit(pygame.image.load(self.show[8]), (295, 302))
 
     # random images
     #todo(mje): Look at this logic more. is this just randomizing all images at all times?
@@ -256,7 +257,7 @@ class Game:
         if len(self.show) > 1:
             self.showold = self.show
         else:
-            self.showold = ["data/img/8.png", "data/img/8.png", "data/img/8.png", "data/img/8.png", "data/img/8.png", "data/img/8.png", "data/img/8.png", "data/img/8.png", "data/img/8.png"]
+            self.showold = []#"data/img/8.png", "data/img/8.png", "data/img/8.png", "data/img/8.png", "data/img/8.png", "data/img/8.png", "data/img/8.png", "data/img/8.png", "data/img/8.png"]
         ran = {}
         ran[0] = randrange(1, 335)
         ran[1] = randrange(1, 335)
@@ -266,15 +267,15 @@ class Game:
         ran[5] = randrange(1, 335)
         ran[6] = randrange(1, 335)
         ran[7] = randrange(1, 335)
-        ran[8] = randrange(1, 335)
+#         ran[8] = randrange(1, 335)
         self.show = []
         #todo(mje): Okay so this is where we decide what img to show and what outcome we get with likelihoods
         for n in ran:
 #Uncomment this line and comment the rest to test a specific outcome
 #             self.show.append(self.imgpaths[0])
-            if 1 <= ran[n] <= 5:
-                self.show.append(self.imgpaths[7])
-            elif 6 <= ran[n] <= 15:
+#             if 1 <= ran[n] <= 5:
+#                 self.show.append(self.imgpaths[7])
+            if 1 <= ran[n] <= 15:
                 self.show.append(self.imgpaths[6])
             elif 16 <= ran[n] <= 30:
                 self.show.append(self.imgpaths[5])
@@ -313,34 +314,32 @@ class Game:
         if self.wins is not None:
             index = self.imgpaths.index(self.wins)
             if index == 0:
-                self.cheesy.play()
-                self.sendandwait(0x00)
-                #SEND CHEESY CMD AND WAIT for both thread and play to stop
-                #sendandwait(cheesy)
-            elif index == 1:
-                self.coin.play()
-                #SEND COIN CMD AND WAIT
-            elif index == 2:
-                self.hth.play()
-                #SEND COIN CMD AND WAIT
-            elif index == 3:
                 self.nyan.play()
-                #SEND NYAN CMD AND WAIT
-            elif index == 4:
-                self.pinchy.play()
-                #SEND NYAN CMD AND WAIT
-            elif index == 5:
-                self.seth.play()
-                #SEND seth CMD AND WAIT
-                #Then send Coin-5 cmd and WAIT
-                #Then send 1up command and WAIT
-            elif index == 6:
+                self.sendandwait(0x00)
+            elif index == 1:
                 self.scream.play()
-                #SEND tentacle CMD AND WAIT
-            elif index == 7:
+                self.sendandwait(0x01)
+            elif index == 2:
                 self.coin.play()
+                self.sendandwait(0x02)
+            elif index == 3:
+                self.hth.play()
+                self.sendandwait(0x03)
+            elif index == 4:
+                self.cheesy.play()
+                self.sendandwait(0x04)
+            elif index == 5:
+                self.pinchy.play()
+                self.sendandwait(0x05)
+            elif index == 6:
+                self.jackpot.play()
+                self.sendandwait(0x06)
+#             elif index == 7:
+#                 self.coin.play()
+#                 self.sendandwait(0x02)
         else:
             self.loss.play()
+            self.sendandwait(0x00)
     
     def sendandwait(self, cmd):
         #SEND CMD AND WAIT for both thread and play to stop
@@ -352,7 +351,7 @@ class Game:
         while not (ser.in_waiting > 0):
             pass
             
-        int byte = ser.read();
+        byte = ser.read(1);
         #TODO: is this valid?
         #line = ser.readline().decode('utf-8').rstrip()
         print("Arduino finished!")
