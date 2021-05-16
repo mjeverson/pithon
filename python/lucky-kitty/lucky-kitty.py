@@ -274,7 +274,7 @@ class Game:
         self.check()
         pygame.display.update()
             
-        #TODO: Get me the index, see if it matches coin or w/e. Some struct
+        #Todo: Flesh out the win code to match the arduino (send-receive-send-receive stuff)
         if self.wins is not None:
             index = self.imgpaths.index(self.wins)
             if index == 0:
