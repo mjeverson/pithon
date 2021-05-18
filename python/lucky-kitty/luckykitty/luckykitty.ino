@@ -13,12 +13,18 @@
 #include <Adafruit_NeoPixel.h> // LED Stuff
 
 // Solenoids
-#define SOL1 2
+#define SOL1 3
 #define SOL2 4
-#define SOL3 7
-#define SOL4 23
+#define SOL3 5
+#define SOL4 6
 #define NUM_SOLS 4
 int sols[NUM_SOLS] = {SOL1, SOL2, SOL3, SOL4};
+
+// Valid output pins: //2-10, 14, 16-17, 20-23, 29-30, 35-38
+#define TENTACLE_SERVO 9
+#define COIN_SERVO 10
+#define PIXEL 23
+#define NUM_PIXELS 90
 
 #define WIN_NYAN 0x00
 #define WIN_TENTACLE 0x01
@@ -30,13 +36,7 @@ int sols[NUM_SOLS] = {SOL1, SOL2, SOL3, SOL4};
 #define LOSS 0x07
 #define CMD_DONE 0x09
 
-// Valid output pins: //2-10, 14, 16-17, 20-23, 29-30, 35-38
-#define TENTACLE_SERVO 8
-#define COIN_SERVO 6
-#define PIXEL 9
-#define NUM_PIXELS 90
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(NUM_PIXELS, PIXEL, NEO_GRBW + NEO_KHZ800);
-
 PWMServo tentacleServo;
 PWMServo coinServo;  
 
@@ -66,7 +66,11 @@ void setup() {
 void loop() {
   // wait until we get a code from the pi. 
   if (Serial.available() > 0){
-    switch (Serial.read()) {
+    byte b = Serial.read();
+    // Uncomment for testing
+//    b = WIN_FIRE;
+    
+    switch (b) {
       case WIN_NYAN:
         winNyan();
         break;
@@ -83,10 +87,7 @@ void loop() {
         winCheese();
         break;
       case WIN_PINCHY:
-        // Red
-        setStripColor(255, 0, 0);
-        // fire all 4
-        fireAll();
+        winPinchy();
         break;
       case WIN_JACKPOT:
         winJackpot();
@@ -120,7 +121,7 @@ void waitForThread(int threadId) {
 void winNyan() {
   // nyan rainbow colours
   int lightThreadId = threads.addThread(rainbowCycleThread);
-  
+
   //1-2-3-4 
   fireSequential(false);
   fireSequential(true);
@@ -185,6 +186,14 @@ void winCheese() {
   // orange
   setStripColor(255, 36, 0);
   fireOff();
+  waitForCommand(CMD_DONE);
+}
+
+void winPinchy() {
+  // Red
+  setStripColor(255, 0, 0);
+  // fire all 4
+  fireAll();
   waitForCommand(CMD_DONE);
 }
 
@@ -297,7 +306,7 @@ void rainbowCycleThread() {
     strip.show();
     j += 10;
 
-    //threads.delay(75);
+    threads.delay(50);
   }
 }
 
