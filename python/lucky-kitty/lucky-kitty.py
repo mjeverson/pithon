@@ -338,6 +338,8 @@ class Game:
             self.loss.play()
             self.sendandwait(self.cmdLoss)
             ser.write(self.cmdDone)
+            
+        print("Finished doing WINstate!")
     
     # Sends a command and waits for both thread and play to stop, eg. #b"Hello from Raspiberry Pi!\n"
     def sendandwait(self, cmd):
