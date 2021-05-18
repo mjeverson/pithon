@@ -375,7 +375,7 @@ if __name__ == "__main__":
     #TODO(MJE): How will this work when we boot up the pi cold, will we need to wait?
     # COMMENT OUT ON OSX FOR TESTING
 #     if pi
-#         ser = serial.Serial('/dev/ttyUSB0', 9600, timeout=5)
+         ser = serial.Serial('/dev/ttyUSB0', 9600, timeout=5)
 #     else        
 #         ser = serial.Serial('/dev/cu.usbserial-A603GDYX', 9600, timeout=5)
 #     ser.flush()
