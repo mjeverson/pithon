@@ -43,6 +43,8 @@ PWMServo coinServo;
 // Get this party started!
 void setup() {  
   Serial.begin(9600);
+  pinMode(LED_BUILTIN, OUTPUT); 
+  digitalWrite(LED_BUILTIN, HIGH);
 
   // Set up solenoid
   for (int i = 0; i < NUM_SOLS; i++) {
@@ -68,7 +70,7 @@ void loop() {
   if (Serial.available() > 0){
     byte b = Serial.read();
     // Uncomment for testing
-//    b = WIN_FIRE;
+//    b = WIN_TENTACLE;
     
     switch (b) {
       case WIN_NYAN:
@@ -115,7 +117,6 @@ void waitForThread(int threadId) {
   while(threads.getState(threadId) == Threads::RUNNING) {}
 }
 
-//todo: All of these might want to wait until getting a "sound finished" before resetting
 //THINK: only reset when you get a reset command? Or - always wait for RESET cmd when finished?
 /* WIN/LOSS STATES */
 void winNyan() {

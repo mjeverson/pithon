@@ -1,4 +1,4 @@
-int led = 13;
+int led = LED_BUILTIN;
 int state = 0;
 
 void setup(){
@@ -7,9 +7,9 @@ void setup(){
 }
 
 void loop(){
-  if (Serial.available() > 0){
-    Serial.print("STATE: ");
-    Serial.print(state);
+//  if (Serial.available() > 0){
+//    Serial.print("STATE: ");
+//    Serial.print(state);
     
     if (state == 0) {
       digitalWrite(led, HIGH);
@@ -18,9 +18,21 @@ void loop(){
       digitalWrite(led, LOW);
       state = 0;
     }
+
+    if (Serial.available() > 0){
+      byte data = Serial.read();
+
+      if (data == 0x00){
+        Serial.println("GOT EXPECTED!");
+      } else {
+        Serial.write(data); 
+      }
+    }
+
+    delay(1000);
     
-    String data = Serial.readStringUntil('\n');
-    Serial.print("You sent me: ");
-    Serial.println(data);
-  }
+//    byte data = Serial.readStringUntil('\n');
+//    Serial.print("You sent me: ");
+//    Serial.println(data);
+//  }
 }
