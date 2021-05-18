@@ -48,6 +48,17 @@ class Game:
         self.scream = pygame.mixer.Sound("_assets/_sounds/scream16.wav")
         self.jackpot = pygame.mixer.Sound("_assets/_sounds/seth16.wav")
         self.background = pygame.image.load("data/img/bg.png")
+        
+        self.winNyan = b'\x00'
+        self.winTentacle = b'\x01'
+        self.winCoin = b'\x02'
+        self.winFire = b'\x03'
+        self.winCheese = b'\x04'
+        self.winPinchy = b'\x05'
+        self.winJackpot = b'\x06'
+        self.cmdLoss = b'\x07'
+        self.cmdDone = b'\x09'
+        
 #         self.rlayer = pygame.image.load("data/img/rlayer.png")
 # Maybe change this to just be the one black line across
         self.windowlayer = pygame.image.load("data/img/windowlayer.png")
@@ -78,6 +89,8 @@ class Game:
 #             else:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
+                    exit()
+                if event.type == pygame.MOUSEBUTTONUP:
                     exit()
                 if event.type == pygame.KEYDOWN:
                     self.bsound.play()
@@ -277,39 +290,39 @@ class Game:
             index = self.imgpaths.index(self.wins)
             if index == 0:
                 self.nyan.play()
-                self.sendandwait(0x00)
-                ser.write(0x09) #maybe a reset instead, no need to wait?
+                self.sendandwait(self.winNyan)
+                ser.write(self.cmdDone) #maybe a reset instead, no need to wait?
             elif index == 1:
                 self.scream.play()
-                self.sendandwait(0x01)
-                ser.write(0x09)
+                self.sendandwait(self.winTentacle)
+                ser.write(self.cmdDone)
             elif index == 2:
                 self.coin.play()
-                self.sendandwait(0x02)
+                self.sendandwait(self.winCoin)
                 self.oneup.play()
                 
                 while pygame.mixer.get_busy():
                     pass
                 
-                ser.write(0x09)
+                ser.write(self.cmdDone)
             elif index == 3:
                 self.hth.play()
-                self.sendandwait(0x03)
-                ser.write(0x09)
+                self.sendandwait(self.winFire)
+                ser.write(self.cmdDone)
             elif index == 4:
                 self.cheesy.play()
-                self.sendandwait(0x04)
-                ser.write(0x09)
+                self.sendandwait(self.winCheese)
+                ser.write(self.cmdDone)
             elif index == 5:
                 self.pinchy.play()
-                self.sendandwait(0x05)
-                ser.write(0x09)
+                self.sendandwait(self.winPinchy)
+                ser.write(self.cmdDone)
             elif index == 6:
                 self.jackpot.play()
                 # Do all the lights and fire
-                self.sendandwait(0x06) 
+                self.sendandwait(self.winJackpot) 
                 
-                ser.write(0x09)
+                ser.write(self.cmdDone)
                 # play the coin sound and dispense a coin 5 times
                 for _ in range(5):
                     self.coin.play()
@@ -320,11 +333,11 @@ class Game:
                 while pygame.mixer.get_busy():
                     pass
 
-                ser.write(0x09)
+                ser.write(self.cmdDone)
         else:
             self.loss.play()
-            self.sendandwait(0x00)
-            ser.write(0x09)
+            self.sendandwait(self.cmdLoss)
+            ser.write(self.cmdDone)
     
     # Sends a command and waits for both thread and play to stop, eg. #b"Hello from Raspiberry Pi!\n"
     def sendandwait(self, cmd):
@@ -337,6 +350,8 @@ class Game:
             pass
             
         byte = ser.read(1);
+        if not byte == self.cmdDone:
+            print("Got an unexpected command")
         print("Arduino finished!")
         print(byte)
         
@@ -375,7 +390,7 @@ if __name__ == "__main__":
     #TODO(MJE): How will this work when we boot up the pi cold, will we need to wait?
     # COMMENT OUT ON OSX FOR TESTING
 #     if pi
-         ser = serial.Serial('/dev/ttyUSB0', 9600, timeout=5)
+    ser = serial.Serial('/dev/ttyACM0', 9600, timeout=5)
 #     else        
 #         ser = serial.Serial('/dev/cu.usbserial-A603GDYX', 9600, timeout=5)
 #     ser.flush()
