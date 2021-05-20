@@ -263,7 +263,7 @@ void fireSequential(boolean reverse){
     int s = sols[i];
     
     if (reverse){
-      s = sols[4-i];
+      s = sols[NUM_SOLS - 1 - i];
     }
     
     digitalWrite(s, HIGH);
