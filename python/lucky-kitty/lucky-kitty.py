@@ -83,10 +83,10 @@ class Game:
         
         # mainloop
         while True:
-            print("Starting new round!")
             # COMMENT OUT ON OSX FOR TESTING
             if self.handle.is_pressed:
                 self.playgame()
+                print("Starting new round!")
             else:
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT:
@@ -97,6 +97,7 @@ class Game:
                         self.bsound.play()
                         if event.key == pygame.K_LEFT and self.keys == 1:
                             self.playgame()
+                            print("Starting new round!")
 
     def playgame(self):
         self.randi()
@@ -251,7 +252,7 @@ class Game:
         for n in ran:
             #todo(mje): Okay so this is where we decide what img to show and what outcome we get with likelihoods
             #Uncomment this line and comment the rest to test a specific outcome
-            self.show.append(self.imgpaths[0])
+            self.show.append(self.imgpaths[1])
 #             if 1 <= ran[n] <= 15:
 #                 self.show.append(self.imgpaths[6])
 #             elif 16 <= ran[n] <= 30:
@@ -305,7 +306,7 @@ class Game:
                 while pygame.mixer.get_busy():
                     pass
                 
-                ser.write(self.cmdDone)
+                self.sendandwait(self.cmdDone)
             elif index == 3:
                 self.hth.play()
                 self.sendandwait(self.winFire)
