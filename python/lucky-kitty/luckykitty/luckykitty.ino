@@ -150,6 +150,7 @@ void winTentacle() {
 void winCoin() {
   // yellow
   setStripColor(255, 255, 0);
+  delay(500);
   doCoin();
   
   // fire: 1-3-2-4-all
@@ -161,6 +162,7 @@ void winCoin() {
 void winFire() {
   // red
   setStripColor(255, 0, 0);
+  delay(3000);
 
   //fire all three at "highway to hell"
   //1s-5s-9s-13s for "highway to hell"
@@ -215,8 +217,8 @@ void winJackpot() {
 
   // dispense 5 coins
   for(int i = 0; i < 5; i++){
+    delay(500);
     doCoin();
-    delay(200);
   }
   
   waitForCommand(CMD_DONE);
@@ -267,9 +269,9 @@ void fireSequential(boolean reverse){
     }
     
     digitalWrite(s, HIGH);
-    delay(250);
+    delay(500);
     digitalWrite(s, LOW);
-    delay(250);
+    delay(500);
   }
 }
 
