@@ -83,6 +83,7 @@ class Game:
         
         # mainloop
         while True:
+            print("Starting new round!")
             # COMMENT OUT ON OSX FOR TESTING
             if self.handle.is_pressed:
                 self.playgame()
@@ -291,11 +292,11 @@ class Game:
             if index == 0:
                 self.nyan.play()
                 self.sendandwait(self.winNyan)
-                ser.write(self.cmdDone) #maybe a reset instead, no need to wait?
+                self.sendandwait(self.cmdDone) #maybe a reset instead, no need to wait?
             elif index == 1:
                 self.scream.play()
                 self.sendandwait(self.winTentacle)
-                ser.write(self.cmdDone)
+                self.sendandwait(self.cmdDone)
             elif index == 2:
                 self.coin.play()
                 self.sendandwait(self.winCoin)
@@ -308,15 +309,15 @@ class Game:
             elif index == 3:
                 self.hth.play()
                 self.sendandwait(self.winFire)
-                ser.write(self.cmdDone)
+                self.sendandwait(self.cmdDone)
             elif index == 4:
                 self.cheesy.play()
                 self.sendandwait(self.winCheese)
-                ser.write(self.cmdDone)
+                self.sendandwait(self.cmdDone)
             elif index == 5:
                 self.pinchy.play()
                 self.sendandwait(self.winPinchy)
-                ser.write(self.cmdDone)
+                self.sendandwait(self.cmdDone)
             elif index == 6:
                 self.jackpot.play()
                 # Do all the lights and fire
@@ -333,17 +334,17 @@ class Game:
                 while pygame.mixer.get_busy():
                     pass
 
-                ser.write(self.cmdDone)
+                self.sendandwait(self.cmdDone)
         else:
             self.loss.play()
             self.sendandwait(self.cmdLoss)
-            ser.write(self.cmdDone)
+            self.sendandwait(self.cmdDone)
             
         print("Finished doing WINstate!")
     
     # Sends a command and waits for both thread and play to stop, eg. #b"Hello from Raspiberry Pi!\n"
     def sendandwait(self, cmd):
-        ser.write(cmd) 
+        ser.write(cmd)
         #TODO(mje): Might need to make sure we're flushing our buffer whenever we send something here
         while pygame.mixer.get_busy():
             pass

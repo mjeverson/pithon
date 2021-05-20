@@ -2,7 +2,7 @@ import serial
 import time
 
 if __name__ == '__main__':
-    ser = serial.Serial('/dev/ttyACM0', 9600, timeout=5)
+    ser = serial.Serial('/dev/tty.usbmodem85842801', 9600, timeout=5)
     ser.flush()
     
 #     while True:
@@ -14,7 +14,7 @@ if __name__ == '__main__':
         print("writing packet")
 #         packet = bytearray()
 #         packet.append(0x00)
-        b = b'\x01'
+        b = b'\x00'
         print("about to write packet")
         print(b)
         ser.write(b)
@@ -28,6 +28,6 @@ if __name__ == '__main__':
 #         print(line)
         line = ser.read(1)
         print(line)
-        if line == b:
+        if line == b'\x09':
             print("VICTORY")
-        time.sleep(1)
+        time.sleep(10)

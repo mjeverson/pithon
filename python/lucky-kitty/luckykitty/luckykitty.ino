@@ -68,50 +68,38 @@ void setup() {
 void loop() {
   // wait until we get a code from the pi. 
   if (Serial.available() > 0){
-    String b = Serial.readStringUntil('\n');
-//    if (b) {
-//    // Uncomment for testing
-//    Serial.print("GOT A B: ");
-//    Serial.println(b);
-////    Serial.flush();
-////    b = WIN_TENTACLE;
-
-      if (b == "0x00") {
+    byte b = Serial.read();
+    switch (b) {
+      case WIN_NYAN:
         winNyan();
-      } 
-    } 
-    
-//    switch (b) {
-//      case "0":
-//        winNyan();
-//        break;
-//      case WIN_TENTACLE:
-//        winTentacle();
-//        break;
-//      case WIN_COIN:
-//        winCoin();
-//        break;
-//      case WIN_FIRE:
-//        winFire();
-//        break;
-//      case WIN_CHEESE:
-//        winCheese();
-//        break;
-//      case WIN_PINCHY:
-//        winPinchy();
-//        break;
-//      case WIN_JACKPOT:
-//        winJackpot();
-//        break;
-//      default:
-//        loss();
-//        break;
-//    }
+        break;
+      case WIN_TENTACLE:
+        winTentacle();
+        break;
+      case WIN_COIN:
+        winCoin();
+        break;
+      case WIN_FIRE:
+        winFire();
+        break;
+      case WIN_CHEESE:
+        winCheese();
+        break;
+      case WIN_PINCHY:
+        winPinchy();
+        break;
+      case WIN_JACKPOT:
+        winJackpot();
+        break;
+      default:
+        loss();
+        break;
+    }
   }
 
   // Reset everything
-//  resetState();
-//  Serial.write(CMD_DONE);
+  resetState();
+  Serial.write(CMD_DONE);
 }
 
 /* WAIT HELPERS */
@@ -152,7 +140,7 @@ void winTentacle() {
   fireAll();
 
   waitForThread(tentacleThreadId);
-  waitForCommand(CMD_DONE);
+  Serial.write(CMD_DONE);
 }
 
 void winCoin() {
