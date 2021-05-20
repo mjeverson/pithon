@@ -33,7 +33,7 @@ class Game:
         
         self.screen = screen
         # COMMENT OUT ON OSX FOR TESTING
-#         self.handle = Button(4)
+        self.handle = Button(4)
         
         self.bsound = pygame.mixer.Sound("data/sounds/CLICK10A.WAV")
         self.oneup = pygame.mixer.Sound("_assets/_sounds/1up16.wav")
@@ -84,18 +84,18 @@ class Game:
         # mainloop
         while True:
             # COMMENT OUT ON OSX FOR TESTING
-#             if handle.is_pressed:
-#                 self.playgame()
-#             else:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    exit()
-                if event.type == pygame.MOUSEBUTTONUP:
-                    exit()
-                if event.type == pygame.KEYDOWN:
-                    self.bsound.play()
-                    if event.key == pygame.K_LEFT and self.keys == 1:
-                        self.playgame()
+            if self.handle.is_pressed:
+                self.playgame()
+            else:
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT:
+                        exit()
+                    if event.type == pygame.MOUSEBUTTONUP:
+                        exit()
+                    if event.type == pygame.KEYDOWN:
+                        self.bsound.play()
+                        if event.key == pygame.K_LEFT and self.keys == 1:
+                            self.playgame()
 
     def playgame(self):
         self.randi()
@@ -119,7 +119,7 @@ class Game:
         
         # toll time
         #Todo: understand what this timing actually is
-        rolla = randrange(100, 280)
+        rolla = randrange(10, 28)
         rollb = randrange(rolla+1, rolla+5)
         rollc = randrange(rollb+1, rollb+5)
         
@@ -250,21 +250,21 @@ class Game:
         for n in ran:
             #todo(mje): Okay so this is where we decide what img to show and what outcome we get with likelihoods
             #Uncomment this line and comment the rest to test a specific outcome
-#             self.show.append(self.imgpaths[0])
-            if 1 <= ran[n] <= 15:
-                self.show.append(self.imgpaths[6])
-            elif 16 <= ran[n] <= 30:
-                self.show.append(self.imgpaths[5])
-            elif 31 <= ran[n] <= 50:
-                self.show.append(self.imgpaths[4])
-            elif 51 <= ran[n] <= 120:
-                self.show.append(self.imgpaths[3])
-            elif 121 <= ran[n] <= 180:
-                self.show.append(self.imgpaths[2])
-            elif 181 <= ran[n] <= 253:
-                self.show.append(self.imgpaths[1])
-            else:
-                self.show.append(self.imgpaths[0])
+            self.show.append(self.imgpaths[0])
+#             if 1 <= ran[n] <= 15:
+#                 self.show.append(self.imgpaths[6])
+#             elif 16 <= ran[n] <= 30:
+#                 self.show.append(self.imgpaths[5])
+#             elif 31 <= ran[n] <= 50:
+#                 self.show.append(self.imgpaths[4])
+#             elif 51 <= ran[n] <= 120:
+#                 self.show.append(self.imgpaths[3])
+#             elif 121 <= ran[n] <= 180:
+#                 self.show.append(self.imgpaths[2])
+#             elif 181 <= ran[n] <= 253:
+#                 self.show.append(self.imgpaths[1])
+#             else:
+#                 self.show.append(self.imgpaths[0])
 
     # Checks if any of your lines have won
     def check(self):
