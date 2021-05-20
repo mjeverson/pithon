@@ -33,7 +33,7 @@ int sols[NUM_SOLS] = {SOL1, SOL2, SOL3, SOL4};
 #define WIN_CHEESE 0x04
 #define WIN_PINCHY 0x05
 #define WIN_JACKPOT 0x06
-#define LOSS 0x07
+#define CMD_LOSS 0x07
 #define CMD_DONE 0x09
 
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(NUM_PIXELS, PIXEL, NEO_GRBW + NEO_KHZ800);
@@ -91,8 +91,12 @@ void loop() {
       case WIN_JACKPOT:
         winJackpot();
         break;
-      default:
+      case CMD_LOSS:
         loss();
+        break;
+      default:
+        // Got an unexpected command
+        Serial.write(b);
         break;
     }
   }
