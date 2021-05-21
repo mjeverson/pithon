@@ -138,7 +138,7 @@ void winNyan() {
 
 void winTentacle() {
   // green 
-  setStripColor(0, 255, 0);
+  setStripColor(0, 255, 0, 0);
 
   int tentacleThreadId = threads.addThread(doTentacle);
   fireAll();
@@ -149,7 +149,7 @@ void winTentacle() {
 
 void winCoin() {
   // yellow
-  setStripColor(255, 255, 0);
+  setStripColor(255, 255, 0, 0);
   delay(500);
   doCoin();
   
@@ -161,7 +161,7 @@ void winCoin() {
 
 void winFire() {
   // red
-  setStripColor(255, 0, 0);
+  setStripColor(255, 0, 0, 0);
   delay(3000);
 
   //fire all three at "highway to hell"
@@ -188,14 +188,14 @@ void winFire() {
 
 void winCheese() {
   // orange
-  setStripColor(255, 36, 0);
+  setStripColor(255, 36, 0, 0);
   fireOff();
   waitForCommand(CMD_DONE);
 }
 
 void winPinchy() {
   // Red
-  setStripColor(255, 0, 0);
+  setStripColor(255, 0, 0, 0);
   // fire all 4
   fireAll();
   waitForCommand(CMD_DONE);
@@ -226,7 +226,7 @@ void winJackpot() {
 
 // Fail, dim lights
 void loss() {
-  setStripColor(25, 25, 25);
+  setStripColor(0, 0, 0, 10);
   Serial.write(CMD_DONE);
   waitForCommand(CMD_DONE);
 }
@@ -238,7 +238,7 @@ void resetState(){
   
   // reset LEDs
   //TODO: since this is rgbw try (0,0,0,255) here?
-  setStripColor(255, 255, 255);
+  setStripColor(0, 0, 0, 50);
 
   // Make sure fire is off
   fireOff();
@@ -267,7 +267,7 @@ void fireSequential(boolean reverse){
     if (reverse){
       s = sols[NUM_SOLS - 1 - i];
     }
-    
+
     digitalWrite(s, HIGH);
     delay(500);
     digitalWrite(s, LOW);
@@ -285,9 +285,9 @@ void fireOff(){
 
 /* LIGHTS */
 // Sets the LED strip all to one colour
-void setStripColor(int r, int g, int b){
+void setStripColor(int r, int g, int b, int w){
   for (int i = 0; i < strip.numPixels(); i++) {
-    strip.setPixelColor(i, r, g, b);
+    strip.setPixelColor(i, r, g, b, w);
   }
 
   strip.show();
