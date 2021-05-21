@@ -47,6 +47,7 @@ class Game:
         self.rstop = pygame.mixer.Sound("_assets/_sounds/rstop16.wav")
         self.scream = pygame.mixer.Sound("_assets/_sounds/scream16.wav")
         self.jackpot = pygame.mixer.Sound("_assets/_sounds/seth16.wav")
+        self.jackpot.set_volume(0.5)
         self.background = pygame.image.load("data/img/bg.png")
         
         self.winNyan = b'\x00'
@@ -252,21 +253,20 @@ class Game:
         for n in ran:
             #todo(mje): Okay so this is where we decide what img to show and what outcome we get with likelihoods
             #Uncomment this line and comment the rest to test a specific outcome
-            self.show.append(self.imgpaths[1])
-#             if 1 <= ran[n] <= 15:
-#                 self.show.append(self.imgpaths[6])
-#             elif 16 <= ran[n] <= 30:
-#                 self.show.append(self.imgpaths[5])
-#             elif 31 <= ran[n] <= 50:
-#                 self.show.append(self.imgpaths[4])
-#             elif 51 <= ran[n] <= 120:
-#                 self.show.append(self.imgpaths[3])
-#             elif 121 <= ran[n] <= 180:
-#                 self.show.append(self.imgpaths[2])
-#             elif 181 <= ran[n] <= 253:
-#                 self.show.append(self.imgpaths[1])
-#             else:
-#                 self.show.append(self.imgpaths[0])
+            if 1 <= ran[n] <= 15:
+                self.show.append(self.imgpaths[6])
+            elif 16 <= ran[n] <= 30:
+                self.show.append(self.imgpaths[5])
+            elif 31 <= ran[n] <= 50:
+                self.show.append(self.imgpaths[4])
+            elif 51 <= ran[n] <= 120:
+                self.show.append(self.imgpaths[3])
+            elif 121 <= ran[n] <= 180:
+                self.show.append(self.imgpaths[2])
+            elif 181 <= ran[n] <= 253:
+                self.show.append(self.imgpaths[1])
+            else:
+                self.show.append(self.imgpaths[0])
 
     # Checks if any of your lines have won
     def check(self):
