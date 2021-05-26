@@ -252,7 +252,8 @@ class Game:
 
         for n in ran:
             #todo(mje): Okay so this is where we decide what img to show and what outcome we get with likelihoods
-            #Uncomment this line and comment the rest to test a specific outcome
+            #DEBUG: Uncomment this line and comment the rest to test a specific outcome
+#             self.show.append(self.imgpaths[1])
             if 1 <= ran[n] <= 15:
                 self.show.append(self.imgpaths[6])
             elif 16 <= ran[n] <= 30:
