@@ -33,7 +33,7 @@ class Game:
         
         self.screen = screen
         # COMMENT OUT ON OSX FOR TESTING
-        self.handle = Button(4)
+#         self.handle = Button(4)
         
         self.bsound = pygame.mixer.Sound("data/sounds/CLICK10A.WAV")
         self.oneup = pygame.mixer.Sound("_assets/_sounds/1up16.wav")
@@ -46,8 +46,7 @@ class Game:
         self.reel = pygame.mixer.Sound("_assets/_sounds/reel16.wav")
         self.rstop = pygame.mixer.Sound("_assets/_sounds/rstop16.wav")
         self.scream = pygame.mixer.Sound("_assets/_sounds/scream16.wav")
-        self.jackpot = pygame.mixer.Sound("_assets/_sounds/seth16.wav")
-        self.jackpot.set_volume(0.5)
+        self.jackpot = pygame.mixer.Sound("_assets/_sounds/nyan16.wav")
         self.background = pygame.image.load("data/img/bg.png")
         
         self.winNyan = b'\x00'
@@ -63,7 +62,7 @@ class Game:
 #         self.rlayer = pygame.image.load("data/img/rlayer.png")
 # Maybe change this to just be the one black line across
         self.windowlayer = pygame.image.load("data/img/windowlayer.png")
-        self.imgpaths = ["_assets/_images/png/nyanf.png", "_assets/_images/png/tentf.png", "_assets/_images/png/coinf.png", "_assets/_images/png/firef.png", "_assets/_images/png/cheesef.png", "_assets/_images/png/pinchyf.png", "_assets/_images/png/sethf.png"]
+        self.imgpaths = ["_assets/_images/png/nyanf.png", "_assets/_images/png/tentf.png", "_assets/_images/png/coinf.png", "_assets/_images/png/firef.png", "_assets/_images/png/cheesef.png", "_assets/_images/png/pinchyf.png", "_assets/_images/png/luckycat.png"]
         self.imgnyan = pygame.image.load(self.imgpaths[0])
         self.imgtent = pygame.image.load(self.imgpaths[1])
         self.imgcoin = pygame.image.load(self.imgpaths[2])
@@ -85,20 +84,20 @@ class Game:
         # mainloop
         while True:
             # COMMENT OUT ON OSX FOR TESTING
-            if self.handle.is_pressed:
-                self.playgame()
-                print("Starting new round!")
-            else:
-                for event in pygame.event.get():
-                    if event.type == pygame.QUIT:
-                        exit()
-                    if event.type == pygame.MOUSEBUTTONUP:
-                        exit()
-                    if event.type == pygame.KEYDOWN:
-                        self.bsound.play()
-                        if event.key == pygame.K_LEFT and self.keys == 1:
-                            self.playgame()
-                            print("Starting new round!")
+#             if self.handle.is_pressed:
+#                 self.playgame()
+#                 print("Starting new round!")
+#             else:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    exit()
+                if event.type == pygame.MOUSEBUTTONUP:
+                    exit()
+                if event.type == pygame.KEYDOWN:
+                    self.bsound.play()
+                    if event.key == pygame.K_LEFT and self.keys == 1:
+                        self.playgame()
+                        print("Starting new round!")
 
     def playgame(self):
         self.randi()
@@ -240,34 +239,36 @@ class Game:
         self.show = []    
             
         ran = {}
-        ran[0] = randrange(1, 335)
-        ran[1] = randrange(1, 335)
-        ran[2] = randrange(1, 335)
-        ran[3] = randrange(1, 335)
-        ran[4] = randrange(1, 335)
-        ran[5] = randrange(1, 335)
-        ran[6] = randrange(1, 335)
-        ran[7] = randrange(1, 335)
-        ran[8] = randrange(1, 335)
+        ran[0] = randrange(1, 350)
+        ran[1] = randrange(1, 350) #
+        ran[2] = randrange(1, 350)
+        ran[3] = randrange(1, 350)
+        ran[4] = randrange(1, 350) #
+        ran[5] = randrange(1, 350)
+        ran[6] = randrange(1, 350)
+        ran[7] = randrange(1, 350) #
+        ran[8] = randrange(1, 350)
+        
+        ##todo(mje): do a single roll here and set self.show[1-4-7] to that outcome if its a win? stats are hard
 
         for n in ran:
             #todo(mje): Okay so this is where we decide what img to show and what outcome we get with likelihoods
             #DEBUG: Uncomment this line and comment the rest to test a specific outcome
-#             self.show.append(self.imgpaths[1])
-            if 1 <= ran[n] <= 15:
-                self.show.append(self.imgpaths[6])
-            elif 16 <= ran[n] <= 30:
-                self.show.append(self.imgpaths[5])
-            elif 31 <= ran[n] <= 50:
-                self.show.append(self.imgpaths[4])
-            elif 51 <= ran[n] <= 120:
-                self.show.append(self.imgpaths[3])
-            elif 121 <= ran[n] <= 180:
-                self.show.append(self.imgpaths[2])
-            elif 181 <= ran[n] <= 253:
-                self.show.append(self.imgpaths[1])
-            else:
-                self.show.append(self.imgpaths[0])
+            self.show.append(self.imgpaths[6])
+#             if 1 <= ran[n] <= 50:
+#                 self.show.append(self.imgpaths[0])
+#             elif 51 <= ran[n] <= 100:
+#                 self.show.append(self.imgpaths[1])
+#             elif 101 <= ran[n] <= 150:
+#                 self.show.append(self.imgpaths[2])
+#             elif 151 <= ran[n] <= 200:
+#                 self.show.append(self.imgpaths[3])
+#             elif 201 <= ran[n] <= 250:
+#                 self.show.append(self.imgpaths[4])
+#             elif 251 <= ran[n] <= 300:
+#                 self.show.append(self.imgpaths[5])
+#             else:
+#                 self.show.append(self.imgpaths[6])
 
     # Checks if any of your lines have won
     def check(self):
@@ -395,7 +396,7 @@ if __name__ == "__main__":
     #TODO(MJE): How will this work when we boot up the pi cold, will we need to wait?
     # COMMENT OUT ON OSX FOR TESTING
 #     if pi
-    ser = serial.Serial('/dev/ttyACM0', 9600, timeout=5)
+#     ser = serial.Serial('/dev/ttyACM0', 9600, timeout=5)
 #     else        
 #         ser = serial.Serial('/dev/cu.usbserial-A603GDYX', 9600, timeout=5)
 #     ser.flush()
