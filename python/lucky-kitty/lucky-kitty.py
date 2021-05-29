@@ -135,10 +135,6 @@ class Game:
         while szam <= rolla:
             rollaf.append(img[randrange(0, 7)])
             szam = szam + 1
-#         rollaf.append(img[self.imgpaths.index(self.showold[0])-1])
-#         rollaf.append(img[self.imgpaths.index(self.showold[1])-1])
-#         rollaf.append(img[self.imgpaths.index(self.showold[2])-1])
-        
             
         szam = 0
         
@@ -150,9 +146,6 @@ class Game:
         while szam <= rollb:
             rollbf.append(img[randrange(0, 7)])
             szam = szam +1
-#         rollbf.append(img[self.imgpaths.index(self.showold[3])-1])
-#         rollbf.append(img[self.imgpaths.index(self.showold[4])-1])
-#         rollbf.append(img[self.imgpaths.index(self.showold[5])-1])
             
         szam = 0
         
@@ -164,10 +157,6 @@ class Game:
         while szam <= rollc:
             rollcf.append(img[randrange(0, 7)])
             szam = szam +1
-
-#         rollcf.append(img[self.imgpaths.index(self.showold[6])-1])
-#         rollcf.append(img[self.imgpaths.index(self.showold[7])-1])
-#         rollcf.append(img[self.imgpaths.index(self.showold[8])-1])
         
         szama = len(rollaf)-1
         szamb = len(rollbf)-1
@@ -231,11 +220,6 @@ class Game:
 
     # random images
     def randi(self):
-#         if len(self.show) > 1:
-#             self.showold = self.show
-#         else:
-#             self.showold = []
-            
         self.show = {}    
             
         ##todo(mje): tweak the odds for outcomes
@@ -256,7 +240,6 @@ class Game:
         elif 61 <= rand <= 70:
             outcome = self.imgpaths[6]
         
-        #todo(mje): Okay so this is where we decide what img to show and what outcome we get with likelihoods
         #DEBUG: Uncomment this line and comment the rest to test a specific outcome
 #         outcome = self.imgpaths[3]
         for i in range(9):
@@ -264,6 +247,7 @@ class Game:
             self.show[i] = self.imgpaths[idx]
             
             # Most of this code is to ensure we don't display too many matching symbols regardless of win condition
+            #todo(mje): Nicer - pick an outcome, then for each of the other slots randomize until they dont match the middle ones
             if outcome is None and i == 4 and idx == self.show[1]:
                 newIdx = idx % 6
                 self.show[i] = self.imgpaths[newIdx]
