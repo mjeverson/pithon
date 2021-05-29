@@ -29,7 +29,7 @@ class Game:
     def __init__(self):
         self.wins = None
         self.keys = 1 #wat do, seems like holding down f1 for fn
-        self.show = []
+        self.show = {}
         
         self.screen = screen
         # COMMENT OUT ON OSX FOR TESTING
@@ -47,7 +47,7 @@ class Game:
         self.rstop = pygame.mixer.Sound("_assets/_sounds/rstop16.wav")
         self.scream = pygame.mixer.Sound("_assets/_sounds/scream16.wav")
         self.jackpot = pygame.mixer.Sound("_assets/_sounds/nyan16.wav")
-        self.background = pygame.image.load("data/img/bg.png")
+#         self.background = pygame.image.load("data/img/bg.png")
         
         self.winNyan = b'\x00'
         self.winTentacle = b'\x01'
@@ -61,7 +61,7 @@ class Game:
         
 #         self.rlayer = pygame.image.load("data/img/rlayer.png")
 # Maybe change this to just be the one black line across
-        self.windowlayer = pygame.image.load("data/img/windowlayer.png")
+#         self.windowlayer = pygame.image.load("data/img/windowlayer.png")
         self.imgpaths = ["_assets/_images/png/nyanf.png", "_assets/_images/png/tentf.png", "_assets/_images/png/coinf.png", "_assets/_images/png/firef.png", "_assets/_images/png/cheesef.png", "_assets/_images/png/pinchyf.png", "_assets/_images/png/luckycat.png"]
         self.imgnyan = pygame.image.load(self.imgpaths[0])
         self.imgtent = pygame.image.load(self.imgpaths[1])
@@ -76,9 +76,9 @@ class Game:
         # Randomize and update the images without actually doing the roll 
         self.randi()
         self.screen.fill([0, 0, 0])
-        self.screen.blit(self.background, (0, 0))
+#         self.screen.blit(self.background, (0, 0))
         self.drawl()
-        self.screen.blit(self.windowlayer, (0, 0))
+#         self.screen.blit(self.windowlayer, (0, 0))
         pygame.display.update()
         
         # mainloop
@@ -103,9 +103,9 @@ class Game:
         self.randi()
         self.roll(self.img)
         #reused
-        self.screen.blit(self.background, (0, 0))
+#         self.screen.blit(self.background, (0, 0))
         self.drawl()
-        self.screen.blit(self.windowlayer, (0, 0))
+#         self.screen.blit(self.windowlayer, (0, 0))
         #/reused
         pygame.display.update()
         self.winner()
@@ -174,7 +174,7 @@ class Game:
         #TODO: this is probably about where we need to do the slowdown
         while szamc > 2:
             self.screen.fill([0, 0, 0])
-            self.screen.blit(self.background, (0, 0))
+#             self.screen.blit(self.background, (0, 0))
             
             if szama > 2:
                 self.screen.blit(rollaf[len(rollaf)-3], (36, 46))
@@ -209,7 +209,7 @@ class Game:
                 self.screen.blit(rollcf[len(rollcf)-2], (295, 174))
                 self.screen.blit(rollcf[len(rollcf)-1], (295, 302))
             
-            self.screen.blit(self.windowlayer, (0, 0))
+#             self.screen.blit(self.windowlayer, (0, 0))
             pygame.display.update()
             rollc = rollc - 1
         self.reel.stop()
@@ -236,40 +236,39 @@ class Game:
         else:
             self.showold = []
             
-        self.show = []    
+        self.show = {}    
             
-        ran = {}
-        ran[0] = randrange(1, 350)
-        ran[1] = randrange(1, 350) #
-        ran[2] = randrange(1, 350)
-        ran[3] = randrange(1, 350)
-        ran[4] = randrange(1, 350) #
-        ran[5] = randrange(1, 350)
-        ran[6] = randrange(1, 350)
-        ran[7] = randrange(1, 350) #
-        ran[8] = randrange(1, 350)
-        
         ##todo(mje): do a single roll here and set self.show[1-4-7] to that outcome if its a win? stats are hard
-
-        for n in ran:
-            #todo(mje): Okay so this is where we decide what img to show and what outcome we get with likelihoods
-            #DEBUG: Uncomment this line and comment the rest to test a specific outcome
-            self.show.append(self.imgpaths[6])
-#             if 1 <= ran[n] <= 50:
-#                 self.show.append(self.imgpaths[0])
-#             elif 51 <= ran[n] <= 100:
-#                 self.show.append(self.imgpaths[1])
-#             elif 101 <= ran[n] <= 150:
-#                 self.show.append(self.imgpaths[2])
-#             elif 151 <= ran[n] <= 200:
-#                 self.show.append(self.imgpaths[3])
-#             elif 201 <= ran[n] <= 250:
-#                 self.show.append(self.imgpaths[4])
-#             elif 251 <= ran[n] <= 300:
-#                 self.show.append(self.imgpaths[5])
-#             else:
-#                 self.show.append(self.imgpaths[6])
-
+        rand = randrange(1, 100)
+        outcome = None
+        if 1 <= rand <= 10:
+            outcome = self.imgpaths[0]
+        elif 11 <= rand <= 20:
+            outcome = self.imgpaths[1]
+        elif 21 <= rand <= 30:
+            outcome = self.imgpaths[2]
+        elif 31 <= rand <= 40:
+            outcome = self.imgpaths[3]
+        elif 41 <= rand <= 50:
+            outcome = self.imgpaths[4]
+        elif 51 <= rand <= 60:
+            outcome = self.imgpaths[5]
+        elif 61 <= rand <= 70:
+            outcome = self.imgpaths[6]
+        
+        #todo(mje): Okay so this is where we decide what img to show and what outcome we get with likelihoods
+        #DEBUG: Uncomment this line and comment the rest to test a specific outcome
+#         outcome = self.imgpaths[3]
+        for i in range(9):
+            idx = randrange(7)
+            self.show[i] = self.imgpaths[idx]
+            
+            if outcome is None and i == 4 and idx == self.show[1]:
+                newIdx = idx % 6
+                self.show[i] = self.imgpaths[newIdx]
+            elif outcome is not None and i in {1, 4, 7}:
+                self.show[i] = outcome
+   
     # Checks if any of your lines have won
     def check(self):
         if self.show[1] == self.show[4] == self.show[7]:
@@ -279,69 +278,68 @@ class Game:
             self.wins = None
    
     def winner(self):
-        print("WIN STATE:")
-        print(self.wins)
-        
-        #TODO: Some indicator that the system is not yet ready
         while pygame.mixer.get_busy():
             pass
         
         self.check()
         pygame.display.update()
+        
+        print("WIN STATE:")
+        print(self.wins)
             
         #Todo: Flesh out the win code to match the arduino (send-receive-send-receive stuff)
-        if self.wins is not None:
-            index = self.imgpaths.index(self.wins)
-            if index == 0:
-                self.nyan.play()
-                self.sendandwait(self.winNyan)
-                self.sendandwait(self.cmdDone) #maybe a reset instead, no need to wait?
-            elif index == 1:
-                self.scream.play()
-                self.sendandwait(self.winTentacle)
-                self.sendandwait(self.cmdDone)
-            elif index == 2:
-                self.coin.play()
-                self.sendandwait(self.winCoin)
-                self.oneup.play()
-                
-                while pygame.mixer.get_busy():
-                    pass
-                
-                self.sendandwait(self.cmdDone)
-            elif index == 3:
-                self.hth.play()
-                self.sendandwait(self.winFire)
-                self.sendandwait(self.cmdDone)
-            elif index == 4:
-                self.cheesy.play()
-                self.sendandwait(self.winCheese)
-                self.sendandwait(self.cmdDone)
-            elif index == 5:
-                self.pinchy.play()
-                self.sendandwait(self.winPinchy)
-                self.sendandwait(self.cmdDone)
-            elif index == 6:
-                self.jackpot.play()
-                # Do all the lights and fire
-                self.sendandwait(self.winJackpot) 
-                
-                ser.write(self.cmdDone)
-                # play the coin sound and dispense a coin 5 times
-                for _ in range(5):
-                    self.coin.play()
-                    while pygame.mixer.get_busy():
-                        pass
-
-                self.oneup.play()
-                while pygame.mixer.get_busy():
-                    pass
-
-                self.sendandwait(self.cmdDone)
-        else:
-            self.loss.play()
-            self.sendandwait(self.cmdLoss)
-            self.sendandwait(self.cmdDone)
+#         if self.wins is not None:
+#             index = self.imgpaths.index(self.wins)
+#             if index == 0:
+#                 self.nyan.play()
+#                 self.sendandwait(self.winNyan)
+#                 self.sendandwait(self.cmdDone) #maybe a reset instead, no need to wait?
+#             elif index == 1:
+#                 self.scream.play()
+#                 self.sendandwait(self.winTentacle)
+#                 self.sendandwait(self.cmdDone)
+#             elif index == 2:
+#                 self.coin.play()
+#                 self.sendandwait(self.winCoin)
+#                 self.oneup.play()
+#                 
+#                 while pygame.mixer.get_busy():
+#                     pass
+#                 
+#                 self.sendandwait(self.cmdDone)
+#             elif index == 3:
+#                 self.hth.play()
+#                 self.sendandwait(self.winFire)
+#                 self.sendandwait(self.cmdDone)
+#             elif index == 4:
+#                 self.cheesy.play()
+#                 self.sendandwait(self.winCheese)
+#                 self.sendandwait(self.cmdDone)
+#             elif index == 5:
+#                 self.pinchy.play()
+#                 self.sendandwait(self.winPinchy)
+#                 self.sendandwait(self.cmdDone)
+#             elif index == 6:
+#                 self.jackpot.play()
+#                 # Do all the lights and fire
+#                 self.sendandwait(self.winJackpot) 
+#                 
+#                 ser.write(self.cmdDone)
+#                 # play the coin sound and dispense a coin 5 times
+#                 for _ in range(5):
+#                     self.coin.play()
+#                     while pygame.mixer.get_busy():
+#                         pass
+# 
+#                 self.oneup.play()
+#                 while pygame.mixer.get_busy():
+#                     pass
+# 
+#                 self.sendandwait(self.cmdDone)
+#         else:
+#             self.loss.play()
+#             self.sendandwait(self.cmdLoss)
+#             self.sendandwait(self.cmdDone)
             
         print("Finished doing WINstate!")
     
