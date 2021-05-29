@@ -135,9 +135,9 @@ class Game:
         while szam <= rolla:
             rollaf.append(img[randrange(0, 7)])
             szam = szam + 1
-        rollaf.append(img[self.imgpaths.index(self.showold[0])-1])
-        rollaf.append(img[self.imgpaths.index(self.showold[1])-1])
-        rollaf.append(img[self.imgpaths.index(self.showold[2])-1])
+#         rollaf.append(img[self.imgpaths.index(self.showold[0])-1])
+#         rollaf.append(img[self.imgpaths.index(self.showold[1])-1])
+#         rollaf.append(img[self.imgpaths.index(self.showold[2])-1])
         
             
         szam = 0
@@ -150,9 +150,9 @@ class Game:
         while szam <= rollb:
             rollbf.append(img[randrange(0, 7)])
             szam = szam +1
-        rollbf.append(img[self.imgpaths.index(self.showold[3])-1])
-        rollbf.append(img[self.imgpaths.index(self.showold[4])-1])
-        rollbf.append(img[self.imgpaths.index(self.showold[5])-1])
+#         rollbf.append(img[self.imgpaths.index(self.showold[3])-1])
+#         rollbf.append(img[self.imgpaths.index(self.showold[4])-1])
+#         rollbf.append(img[self.imgpaths.index(self.showold[5])-1])
             
         szam = 0
         
@@ -165,9 +165,9 @@ class Game:
             rollcf.append(img[randrange(0, 7)])
             szam = szam +1
 
-        rollcf.append(img[self.imgpaths.index(self.showold[6])-1])
-        rollcf.append(img[self.imgpaths.index(self.showold[7])-1])
-        rollcf.append(img[self.imgpaths.index(self.showold[8])-1])
+#         rollcf.append(img[self.imgpaths.index(self.showold[6])-1])
+#         rollcf.append(img[self.imgpaths.index(self.showold[7])-1])
+#         rollcf.append(img[self.imgpaths.index(self.showold[8])-1])
         
         szama = len(rollaf)-1
         szamb = len(rollbf)-1
@@ -231,10 +231,10 @@ class Game:
 
     # random images
     def randi(self):
-        if len(self.show) > 1:
-            self.showold = self.show
-        else:
-            self.showold = []
+#         if len(self.show) > 1:
+#             self.showold = self.show
+#         else:
+#             self.showold = []
             
         self.show = {}    
             
