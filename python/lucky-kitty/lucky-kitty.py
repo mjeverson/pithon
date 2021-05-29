@@ -32,7 +32,7 @@ class Game:
         self.show = {}
         
         self.screen = screen
-        self.xoffsets = [120, 256, 392]#[36, 165, 295]
+        self.xoffsets = [120, 250, 380]#[36, 165, 295]
         self.yoffsets = [46, 174, 302]
         # COMMENT OUT ON OSX FOR TESTING
 #         self.handle = Button(4)
@@ -63,7 +63,7 @@ class Game:
         
 #         self.rlayer = pygame.image.load("data/img/rlayer.png")
 # Maybe change this to just be the one black line across
-#         self.windowlayer = pygame.image.load("data/img/windowlayer.png")
+        self.windowlayer = pygame.image.load("data/img/windowlayer.png")
         self.imgpaths = ["_assets/_images/png/nyanf.png", "_assets/_images/png/tentf.png", "_assets/_images/png/coinf.png", "_assets/_images/png/firef.png", "_assets/_images/png/cheesef.png", "_assets/_images/png/pinchyf.png", "_assets/_images/png/luckycat.png"]
         self.imgnyan = pygame.image.load(self.imgpaths[0])
         self.imgtent = pygame.image.load(self.imgpaths[1])
@@ -80,7 +80,7 @@ class Game:
         self.screen.fill([0, 0, 0])
 #         self.screen.blit(self.background, (0, 0))
         self.drawl()
-#         self.screen.blit(self.windowlayer, (0, 0))
+        self.screen.blit(self.windowlayer, (self.xoffsets[0] - 35, 0))
         pygame.display.update()
         
         # mainloop
@@ -107,7 +107,7 @@ class Game:
         #reused
 #         self.screen.blit(self.background, (0, 0))
         self.drawl()
-#         self.screen.blit(self.windowlayer, (0, 0))
+        self.screen.blit(self.windowlayer, (self.xoffsets[0] - 35, 0))
         #/reused
         pygame.display.update()
         self.winner()
@@ -211,7 +211,7 @@ class Game:
                 self.screen.blit(rollcf[len(rollcf)-2], (self.xoffsets[2], self.yoffsets[1]))
                 self.screen.blit(rollcf[len(rollcf)-1], (self.xoffsets[2], self.yoffsets[2]))
             
-#             self.screen.blit(self.windowlayer, (0, 0))
+            self.screen.blit(self.windowlayer, (self.xoffsets[0] - 35, 0))
             pygame.display.update()
             rollc = rollc - 1
         self.reel.stop()
@@ -230,8 +230,6 @@ class Game:
         self.screen.blit(pygame.image.load(self.show[8]), (self.xoffsets[2], self.yoffsets[2]))
 
     # random images
-    #todo(mje): Look at this logic more. is this just randomizing all images at all times?
-    # Then comparing? May need a better approach for probabilities
     def randi(self):
         if len(self.show) > 1:
             self.showold = self.show
@@ -240,7 +238,7 @@ class Game:
             
         self.show = {}    
             
-        ##todo(mje): do a single roll here and set self.show[1-4-7] to that outcome if its a win? stats are hard
+        ##todo(mje): tweak the odds for outcomes
         rand = randrange(1, 100)
         outcome = None
         if 1 <= rand <= 10:
