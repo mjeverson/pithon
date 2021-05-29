@@ -32,6 +32,8 @@ class Game:
         self.show = {}
         
         self.screen = screen
+        self.xoffsets = [120, 256, 392]#[36, 165, 295]
+        self.yoffsets = [46, 174, 302]
         # COMMENT OUT ON OSX FOR TESTING
 #         self.handle = Button(4)
         
@@ -177,37 +179,37 @@ class Game:
 #             self.screen.blit(self.background, (0, 0))
             
             if szama > 2:
-                self.screen.blit(rollaf[len(rollaf)-3], (36, 46))
-                self.screen.blit(rollaf[len(rollaf)-2], (36, 174))
-                self.screen.blit(rollaf[len(rollaf)-1], (36, 302))
+                self.screen.blit(rollaf[len(rollaf)-3], (self.xoffsets[0], self.yoffsets[0]))
+                self.screen.blit(rollaf[len(rollaf)-2], (self.xoffsets[0], self.yoffsets[1]))
+                self.screen.blit(rollaf[len(rollaf)-1], (self.xoffsets[0], self.yoffsets[2]))
                 szama = szama - 1
                 del(rollaf[len(rollaf)-1])
             else:
-                self.screen.blit(rollaf[len(rollaf)-3], (36, 46))
-                self.screen.blit(rollaf[len(rollaf)-2], (36, 174))
-                self.screen.blit(rollaf[len(rollaf)-1], (36, 302))
+                self.screen.blit(rollaf[len(rollaf)-3], (self.xoffsets[0], self.yoffsets[0]))
+                self.screen.blit(rollaf[len(rollaf)-2], (self.xoffsets[0], self.yoffsets[1]))
+                self.screen.blit(rollaf[len(rollaf)-1], (self.xoffsets[0], self.yoffsets[2]))
                 
             if szamb > 2:
-                self.screen.blit(rollbf[len(rollbf)-3], (165, 46))
-                self.screen.blit(rollbf[len(rollbf)-2], (165, 174))
-                self.screen.blit(rollbf[len(rollbf)-1], (165, 302))
+                self.screen.blit(rollbf[len(rollbf)-3], (self.xoffsets[1], self.yoffsets[0]))
+                self.screen.blit(rollbf[len(rollbf)-2], (self.xoffsets[1], self.yoffsets[1]))
+                self.screen.blit(rollbf[len(rollbf)-1], (self.xoffsets[1], self.yoffsets[2]))
                 szamb = szamb - 1
                 del(rollbf[len(rollbf)-1])
             else:
-                self.screen.blit(rollbf[len(rollbf)-3], (165, 46))
-                self.screen.blit(rollbf[len(rollbf)-2], (165, 174))
-                self.screen.blit(rollbf[len(rollbf)-1], (165, 302))
+                self.screen.blit(rollbf[len(rollbf)-3], (self.xoffsets[1], self.yoffsets[0]))
+                self.screen.blit(rollbf[len(rollbf)-2], (self.xoffsets[1], self.yoffsets[1]))
+                self.screen.blit(rollbf[len(rollbf)-1], (self.xoffsets[1], self.yoffsets[2]))
                 
             if szamc > 2:
-                self.screen.blit(rollcf[len(rollcf)-3], (295, 46))
-                self.screen.blit(rollcf[len(rollcf)-2], (295, 174))
-                self.screen.blit(rollcf[len(rollcf)-1], (295, 302))
+                self.screen.blit(rollcf[len(rollcf)-3], (self.xoffsets[2], self.yoffsets[0]))
+                self.screen.blit(rollcf[len(rollcf)-2], (self.xoffsets[2], self.yoffsets[1]))
+                self.screen.blit(rollcf[len(rollcf)-1], (self.xoffsets[2], self.yoffsets[2]))
                 szamc = szamc - 1
                 del(rollcf[len(rollcf)-1])
             else:
-                self.screen.blit(rollcf[len(rollcf)-3], (295, 46))
-                self.screen.blit(rollcf[len(rollcf)-2], (295, 174))
-                self.screen.blit(rollcf[len(rollcf)-1], (295, 302))
+                self.screen.blit(rollcf[len(rollcf)-3], (self.xoffsets[2], self.yoffsets[0]))
+                self.screen.blit(rollcf[len(rollcf)-2], (self.xoffsets[2], self.yoffsets[1]))
+                self.screen.blit(rollcf[len(rollcf)-1], (self.xoffsets[2], self.yoffsets[2]))
             
 #             self.screen.blit(self.windowlayer, (0, 0))
             pygame.display.update()
@@ -217,15 +219,15 @@ class Game:
     
     def drawl(self):
         #blit(image, (x,y to load it in)
-        self.screen.blit(pygame.image.load(self.show[0]), (36, 46))
-        self.screen.blit(pygame.image.load(self.show[1]), (36, 174))
-        self.screen.blit(pygame.image.load(self.show[2]), (36, 302))
-        self.screen.blit(pygame.image.load(self.show[3]), (165, 46))
-        self.screen.blit(pygame.image.load(self.show[4]), (165, 174))
-        self.screen.blit(pygame.image.load(self.show[5]), (165, 302))
-        self.screen.blit(pygame.image.load(self.show[6]), (295, 46))
-        self.screen.blit(pygame.image.load(self.show[7]), (295, 174))
-        self.screen.blit(pygame.image.load(self.show[8]), (295, 302))
+        self.screen.blit(pygame.image.load(self.show[0]), (self.xoffsets[0], self.yoffsets[0]))
+        self.screen.blit(pygame.image.load(self.show[1]), (self.xoffsets[0], self.yoffsets[1]))
+        self.screen.blit(pygame.image.load(self.show[2]), (self.xoffsets[0], self.yoffsets[2]))
+        self.screen.blit(pygame.image.load(self.show[3]), (self.xoffsets[1], self.yoffsets[0]))
+        self.screen.blit(pygame.image.load(self.show[4]), (self.xoffsets[1], self.yoffsets[1]))
+        self.screen.blit(pygame.image.load(self.show[5]), (self.xoffsets[1], self.yoffsets[2]))
+        self.screen.blit(pygame.image.load(self.show[6]), (self.xoffsets[2], self.yoffsets[0]))
+        self.screen.blit(pygame.image.load(self.show[7]), (self.xoffsets[2], self.yoffsets[1]))
+        self.screen.blit(pygame.image.load(self.show[8]), (self.xoffsets[2], self.yoffsets[2]))
 
     # random images
     #todo(mje): Look at this logic more. is this just randomizing all images at all times?
@@ -272,7 +274,7 @@ class Game:
     # Checks if any of your lines have won
     def check(self):
         if self.show[1] == self.show[4] == self.show[7]:
-            pygame.draw.line(self.screen, [246, 226, 0], (36, 239), (423, 239), 8)
+            pygame.draw.line(self.screen, [246, 226, 0], (self.xoffsets[0], 239), (self.xoffsets[2] + 128, 239), 8)
             self.wins = self.show[1]
         else:
             self.wins = None
