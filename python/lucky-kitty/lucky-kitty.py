@@ -132,7 +132,7 @@ class Game:
         rollaf.append(img[self.imgpaths.index(self.show[0])-1])
         rollaf.append(img[self.imgpaths.index(self.show[1])-1])
         rollaf.append(img[self.imgpaths.index(self.show[2])-1])
-        while szam <= rolla-3:
+        while szam <= rolla:
             rollaf.append(img[randrange(0, 7)])
             szam = szam + 1
         rollaf.append(img[self.imgpaths.index(self.showold[0])-1])
@@ -147,7 +147,7 @@ class Game:
         rollbf.append(img[self.imgpaths.index(self.show[3])-1])
         rollbf.append(img[self.imgpaths.index(self.show[4])-1])
         rollbf.append(img[self.imgpaths.index(self.show[5])-1])
-        while szam <= rollb-3:
+        while szam <= rollb:
             rollbf.append(img[randrange(0, 7)])
             szam = szam +1
         rollbf.append(img[self.imgpaths.index(self.showold[3])-1])
@@ -161,7 +161,7 @@ class Game:
         rollcf.append(img[self.imgpaths.index(self.show[6])-1])
         rollcf.append(img[self.imgpaths.index(self.show[7])-1])
         rollcf.append(img[self.imgpaths.index(self.show[8])-1])
-        while szam <= rollc-3:
+        while szam <= rollc:
             rollcf.append(img[randrange(0, 7)])
             szam = szam +1
 
@@ -263,11 +263,16 @@ class Game:
             idx = randrange(7)
             self.show[i] = self.imgpaths[idx]
             
+            # Most of this code is to ensure we don't display too many matching symbols regardless of win condition
             if outcome is None and i == 4 and idx == self.show[1]:
                 newIdx = idx % 6
                 self.show[i] = self.imgpaths[newIdx]
             elif outcome is not None and i in {1, 4, 7}:
                 self.show[i] = outcome
+            elif outcome is not None and i in {0, 3, 6} and self.show[i] == outcome:
+                self.show[i] = self.imgpaths[(idx + 1) % 6]
+            elif outcome is not None and i in {2, 5, 8} and self.show[i] == outcome:
+                self.show[i] = self.imgpaths[(idx + 2) % 6]
    
     # Checks if any of your lines have won
     def check(self):
