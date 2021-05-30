@@ -1,16 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# #
-# Python: Load up the slots UI in a random position
-# Wait for the lever to be pulled
-# Do the slots - pick a random outcome and have it happen. 
-# play the sounds while this is happening: Thread(play rolling sound), pi does the thing and wait for Thread, then play finished sound 
-# Based on the result, Thread(send a code to the arduino and wait), Pi: and play a sound and wait for Thread
-# --> Arduino is listening for code, fires all the peripherals
-# --> Sends a message back to python when done, goes back to listening
-# Once we get the response from the arduino AND the sound is done playing we can do the next thing:
-# Either send a command to dispense N coins, followed by wait for done, then reset the screen and send a reset command to the arduino
-# fn: Thread(send command and wait), have the pi play sounds
+# raspberry pi, fullscreen
+# python3 lucky-kitty.py -p -f
+# OSX Testing
+# python3 lucky-kitty.py -d
+# Override forcewin = None to force a particular winstate for testing
 
 import pygame
 from pygame.locals import *
@@ -26,10 +20,11 @@ VERSION = "0.1"
 
 # the game###########################
 class Game:
-    def __init__(self, debug):
+    def __init__(self, debug, forcewin):
         self.wins = None
         self.show = {}
         self.debug = debug
+        self.forcewin = forcewin
         
         self.screen = screen
         self.xoffsets = [120, 250, 380]#[36, 165, 295]
@@ -242,9 +237,10 @@ class Game:
         elif 43 <= rand <= 49:
             outcome = self.imgpaths[6]
         
-        
         #DEBUG: Uncomment this line and comment the rest to test a specific outcome
-#         outcome = self.imgpaths[3]
+        if self.forcewin is not None:
+            outcome = self.imgpaths[self.forcewin]
+            
         for i in range(9):
             idx = randrange(7)
             self.show[i] = self.imgpaths[idx]
@@ -387,6 +383,7 @@ if __name__ == "__main__":
             pi = True
         if opt in ("-d", "--debug"):
             debug = True
+                
          
     # Setup serial communication
     #TODO(MJE): How will this work when we boot up the pi cold, will we need to wait?
@@ -409,5 +406,7 @@ if __name__ == "__main__":
     pygame.display.set_caption("Lucky Kitty MkII")
     pygame.mouse.set_visible(False)
     
-    plc = Game(debug) 
+    # Override this to test a specific win state, 0-6
+    forcewin = None
+    plc = Game(debug, forcewin) 
     pygame.display.update()
