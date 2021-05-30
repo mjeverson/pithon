@@ -26,16 +26,17 @@ VERSION = "0.1"
 
 # the game###########################
 class Game:
-    def __init__(self):
+    def __init__(self, debug):
         self.wins = None
-        self.keys = 1 #wat do, seems like holding down f1 for fn
         self.show = {}
+        self.debug = debug
         
         self.screen = screen
         self.xoffsets = [120, 250, 380]#[36, 165, 295]
         self.yoffsets = [46, 174, 302]
         # COMMENT OUT ON OSX FOR TESTING
-#         self.handle = Button(4)
+        if not self.debug:
+            self.handle = Button(4)
         
         self.bsound = pygame.mixer.Sound("data/sounds/CLICK10A.WAV")
         self.oneup = pygame.mixer.Sound("_assets/_sounds/1up16.wav")
@@ -87,20 +88,20 @@ class Game:
         # mainloop
         while True:
             # COMMENT OUT ON OSX FOR TESTING
-#             if self.handle.is_pressed:
-#                 self.playgame()
-#                 print("Starting new round!")
-#             else:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    exit()
-                if event.type == pygame.MOUSEBUTTONUP:
-                    exit()
-                if event.type == pygame.KEYDOWN:
-                    self.bsound.play()
-                    if event.key == pygame.K_LEFT and self.keys == 1:
-                        self.playgame()
-                        print("Starting new round!")
+            if not self.debug and self.handle.is_pressed:
+                self.playgame()
+                print("Starting new round!")
+            else:
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT:
+                        exit()
+                    if event.type == pygame.MOUSEBUTTONUP:
+                        exit()
+                    if event.type == pygame.KEYDOWN:
+                        self.bsound.play()
+                        if event.key == pygame.K_LEFT:
+                            self.playgame()
+                            print("Starting new round!")
 
     def playgame(self):
         self.randi()
@@ -123,7 +124,7 @@ class Game:
         self.reel.play(loops=-1)
         
         # toll time
-        #Todo: understand what this timing actually is
+        #Todo: understand what this timing actually is (higher number is longer)
         rolla = randrange(750, 1000)
         rollb = randrange(rolla+1, rolla+5)
         rollc = randrange(rollb+1, rollb+5)
@@ -241,6 +242,7 @@ class Game:
         elif 43 <= rand <= 49:
             outcome = self.imgpaths[6]
         
+        
         #DEBUG: Uncomment this line and comment the rest to test a specific outcome
 #         outcome = self.imgpaths[3]
         for i in range(9):
@@ -278,58 +280,59 @@ class Game:
         print(self.wins)
             
         #Todo: Flesh out the win code to match the arduino (send-receive-send-receive stuff)
-#         if self.wins is not None:
-#             index = self.imgpaths.index(self.wins)
-#             if index == 0:
-#                 self.nyan.play()
-#                 self.sendandwait(self.winNyan)
-#                 self.sendandwait(self.cmdDone) #maybe a reset instead, no need to wait?
-#             elif index == 1:
-#                 self.scream.play()
-#                 self.sendandwait(self.winTentacle)
-#                 self.sendandwait(self.cmdDone)
-#             elif index == 2:
-#                 self.coin.play()
-#                 self.sendandwait(self.winCoin)
-#                 self.oneup.play()
-#                 
-#                 while pygame.mixer.get_busy():
-#                     pass
-#                 
-#                 self.sendandwait(self.cmdDone)
-#             elif index == 3:
-#                 self.hth.play()
-#                 self.sendandwait(self.winFire)
-#                 self.sendandwait(self.cmdDone)
-#             elif index == 4:
-#                 self.cheesy.play()
-#                 self.sendandwait(self.winCheese)
-#                 self.sendandwait(self.cmdDone)
-#             elif index == 5:
-#                 self.pinchy.play()
-#                 self.sendandwait(self.winPinchy)
-#                 self.sendandwait(self.cmdDone)
-#             elif index == 6:
-#                 self.jackpot.play()
-#                 # Do all the lights and fire
-#                 self.sendandwait(self.winJackpot) 
-#                 
-#                 ser.write(self.cmdDone)
-#                 # play the coin sound and dispense a coin 5 times
-#                 for _ in range(5):
-#                     self.coin.play()
-#                     while pygame.mixer.get_busy():
-#                         pass
-# 
-#                 self.oneup.play()
-#                 while pygame.mixer.get_busy():
-#                     pass
-# 
-#                 self.sendandwait(self.cmdDone)
-#         else:
-#             self.loss.play()
-#             self.sendandwait(self.cmdLoss)
-#             self.sendandwait(self.cmdDone)
+        if not self.debug:
+            if self.wins is not None:
+                index = self.imgpaths.index(self.wins)
+                if index == 0:
+                    self.nyan.play()
+                    self.sendandwait(self.winNyan)
+                    self.sendandwait(self.cmdDone) #maybe a reset instead, no need to wait?
+                elif index == 1:
+                    self.scream.play()
+                    self.sendandwait(self.winTentacle)
+                    self.sendandwait(self.cmdDone)
+                elif index == 2:
+                    self.coin.play()
+                    self.sendandwait(self.winCoin)
+                    self.oneup.play()
+                    
+                    while pygame.mixer.get_busy():
+                        pass
+                    
+                    self.sendandwait(self.cmdDone)
+                elif index == 3:
+                    self.hth.play()
+                    self.sendandwait(self.winFire)
+                    self.sendandwait(self.cmdDone)
+                elif index == 4:
+                    self.cheesy.play()
+                    self.sendandwait(self.winCheese)
+                    self.sendandwait(self.cmdDone)
+                elif index == 5:
+                    self.pinchy.play()
+                    self.sendandwait(self.winPinchy)
+                    self.sendandwait(self.cmdDone)
+                elif index == 6:
+                    self.jackpot.play()
+                    # Do all the lights and fire
+                    self.sendandwait(self.winJackpot) 
+                    
+                    ser.write(self.cmdDone)
+                    # play the coin sound and dispense a coin 5 times
+                    for _ in range(5):
+                        self.coin.play()
+                        while pygame.mixer.get_busy():
+                            pass
+
+                    self.oneup.play()
+                    while pygame.mixer.get_busy():
+                        pass
+
+                    self.sendandwait(self.cmdDone)
+            else:
+                self.loss.play()
+                self.sendandwait(self.cmdLoss)
+                self.sendandwait(self.cmdDone)
             
         print("Finished doing WINstate!")
     
@@ -350,21 +353,24 @@ class Game:
         print(byte)
         
 def help():
-    print("Lucky Kitty help:")
+    print("Lucky Kitty help: eg. python3 lucky-kitty.py -p -f")
     print("Options:")
     print("-h, --help        display this help message")
     print("-v, --version     display game version")
     print("-f, --fullscreen  run in fullscreen mode")
     print("-p, --pi          run in raspberry pi mode")
+    print("-d, --debug       run in debug mode")
     print("Contact: everson.mike@gmail.com")
 
 if __name__ == "__main__":
     fullscreen = False
     pi = False
+    debug = False
     
     try:
-        long = ["help", "version"]
-        opts = getopt(argv[1:], "hv", long)[0]
+        short = "hvfpd"
+        long = ["help", "version", "fullscreen", "pi", "debug"]
+        opts = getopt(argv[1:], short, long)[0]
     except GetoptError:
         help()
         exit()
@@ -379,15 +385,18 @@ if __name__ == "__main__":
             fullscreen = True
         if opt in ("-p", "--pi"):
             pi = True
+        if opt in ("-d", "--debug"):
+            debug = True
          
     # Setup serial communication
     #TODO(MJE): How will this work when we boot up the pi cold, will we need to wait?
     # COMMENT OUT ON OSX FOR TESTING
-#     if pi
-#     ser = serial.Serial('/dev/ttyACM0', 9600, timeout=5)
-#     else        
-#         ser = serial.Serial('/dev/cu.usbserial-A603GDYX', 9600, timeout=5)
-#     ser.flush()
+    if not debug:
+        if pi:
+            ser = serial.Serial('/dev/ttyACM0', 9600, timeout=5)
+        else:        
+            ser = serial.Serial('/dev/cu.usbserial-A603GDYX', 9600, timeout=5)
+        ser.flush()
             
     # pygame init, set display
     pygame.init()
@@ -400,5 +409,5 @@ if __name__ == "__main__":
     pygame.display.set_caption("Lucky Kitty MkII")
     pygame.mouse.set_visible(False)
     
-    plc = Game() 
+    plc = Game(debug) 
     pygame.display.update()
