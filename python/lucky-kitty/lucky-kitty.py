@@ -61,9 +61,9 @@ class Game:
         self.cmdLoss = b'\x07'
         self.cmdDone = b'\x09'
         
-#         self.rlayer = pygame.image.load("data/img/rlayer.png")
+        self.rlayer = pygame.image.load("data/img/rlayer.png")
 # Maybe change this to just be the one black line across
-        self.windowlayer = pygame.image.load("data/img/windowlayer.png")
+#         self.windowlayer = pygame.image.load("data/img/windowlayer.png")
         self.imgpaths = ["_assets/_images/png/nyanf.png", "_assets/_images/png/tentf.png", "_assets/_images/png/coinf.png", "_assets/_images/png/firef.png", "_assets/_images/png/cheesef.png", "_assets/_images/png/pinchyf.png", "_assets/_images/png/luckycat.png"]
         self.imgnyan = pygame.image.load(self.imgpaths[0])
         self.imgtent = pygame.image.load(self.imgpaths[1])
@@ -80,7 +80,8 @@ class Game:
         self.screen.fill([0, 0, 0])
 #         self.screen.blit(self.background, (0, 0))
         self.drawl()
-        self.screen.blit(self.windowlayer, (self.xoffsets[0] - 35, 0))
+#         self.screen.blit(self.windowlayer, (self.xoffsets[0] - 35, 0))
+#         self.screen.blit(self.rlayer, (self.xoffsets[0], self.yoffsets[0]))
         pygame.display.update()
         
         # mainloop
@@ -107,7 +108,7 @@ class Game:
         #reused
 #         self.screen.blit(self.background, (0, 0))
         self.drawl()
-        self.screen.blit(self.windowlayer, (self.xoffsets[0] - 35, 0))
+#         self.screen.blit(self.windowlayer, (self.xoffsets[0] - 35, 0))
         #/reused
         pygame.display.update()
         self.winner()
@@ -123,7 +124,7 @@ class Game:
         
         # toll time
         #Todo: understand what this timing actually is
-        rolla = randrange(10, 28)
+        rolla = randrange(750, 1000)
         rollb = randrange(rolla+1, rolla+5)
         rollc = randrange(rollb+1, rollb+5)
         
@@ -200,7 +201,7 @@ class Game:
                 self.screen.blit(rollcf[len(rollcf)-2], (self.xoffsets[2], self.yoffsets[1]))
                 self.screen.blit(rollcf[len(rollcf)-1], (self.xoffsets[2], self.yoffsets[2]))
             
-            self.screen.blit(self.windowlayer, (self.xoffsets[0] - 35, 0))
+#             self.screen.blit(self.windowlayer, (self.xoffsets[0] - 35, 0))
             pygame.display.update()
             rollc = rollc - 1
         self.reel.stop()
@@ -225,19 +226,19 @@ class Game:
         ##todo(mje): tweak the odds for outcomes
         rand = randrange(1, 100)
         outcome = None
-        if 1 <= rand <= 10:
+        if 1 <= rand <= 7:
             outcome = self.imgpaths[0]
-        elif 11 <= rand <= 20:
+        elif 8 <= rand <= 14:
             outcome = self.imgpaths[1]
-        elif 21 <= rand <= 30:
+        elif 15 <= rand <= 21:
             outcome = self.imgpaths[2]
-        elif 31 <= rand <= 40:
+        elif 22 <= rand <= 28:
             outcome = self.imgpaths[3]
-        elif 41 <= rand <= 50:
+        elif 29 <= rand <= 35:
             outcome = self.imgpaths[4]
-        elif 51 <= rand <= 60:
+        elif 36 <= rand <= 42:
             outcome = self.imgpaths[5]
-        elif 61 <= rand <= 70:
+        elif 43 <= rand <= 49:
             outcome = self.imgpaths[6]
         
         #DEBUG: Uncomment this line and comment the rest to test a specific outcome
