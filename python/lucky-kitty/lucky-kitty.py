@@ -20,11 +20,11 @@ VERSION = "0.1"
 
 # the game###########################
 class Game:
-    def __init__(self, debug, forcewin):
+    def __init__(self, dbg, fw):
         self.wins = None
         self.show = {}
-        self.debug = debug
-        self.forcewin = forcewin
+        self.debug = dbg
+        self.forcewin = fw
         
         self.screen = screen
         self.xoffsets = [120, 250, 380]#[36, 165, 295]
