@@ -222,19 +222,19 @@ class Game:
         ##todo(mje): tweak the odds for outcomes
         rand = randrange(1, 100)
         outcome = None
-        if 1 <= rand <= 7:
+        if 1 <= rand <= 8:
             outcome = self.imgpaths[0]
-        elif 8 <= rand <= 14:
+        elif 9 <= rand <= 15:
             outcome = self.imgpaths[1]
-        elif 15 <= rand <= 21:
+        elif 16 <= rand <= 22:
             outcome = self.imgpaths[2]
-        elif 22 <= rand <= 28:
+        elif 23 <= rand <= 29:
             outcome = self.imgpaths[3]
-        elif 29 <= rand <= 35:
+        elif 30 <= rand <= 36:
             outcome = self.imgpaths[4]
-        elif 36 <= rand <= 42:
+        elif 37 <= rand <= 43:
             outcome = self.imgpaths[5]
-        elif 43 <= rand <= 49:
+        elif 44 <= rand <= 50:
             outcome = self.imgpaths[6]
         
         #DEBUG: Uncomment this line and comment the rest to test a specific outcome
@@ -314,8 +314,8 @@ class Game:
                     self.sendandwait(self.winJackpot) 
                     
                     ser.write(self.cmdDone)
-                    # play the coin sound and dispense a coin 5 times
-                    for _ in range(5):
+                    # play the coin sound and dispense a coin 3 times
+                    for _ in range(3):
                         self.coin.play()
                         while pygame.mixer.get_busy():
                             pass

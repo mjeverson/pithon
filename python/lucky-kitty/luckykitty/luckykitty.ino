@@ -37,6 +37,7 @@ int sols[NUM_SOLS] = {SOL1, SOL2, SOL3, SOL4};
 #define CMD_LOSS 0x07
 #define CMD_DONE 0x09
 
+//todo(mje): BOX_PIXELS + COIN_PIXELS
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(BOX_PIXELS, PIXEL, NEO_GRBW + NEO_KHZ800);
 PWMServo tentacleServo;
 PWMServo coinServo;  
@@ -139,7 +140,7 @@ void winNyan() {
 
 void winTentacle() {
   // green 
-  setStripColor(0, 255, 0, 0);
+  setBoxColor(0, 255, 0, 0);
 
   int tentacleThreadId = threads.addThread(doTentacle);
   fireAll();
@@ -150,7 +151,7 @@ void winTentacle() {
 
 void winCoin() {
   // yellow
-  setStripColor(255, 255, 0, 0);
+  setBoxColor(255, 255, 0, 0);
   delay(500);
   doCoin();
   
@@ -162,7 +163,7 @@ void winCoin() {
 
 void winFire() {
   // red
-  setStripColor(255, 0, 0, 0);
+  setBoxColor(255, 0, 0, 0);
   delay(3000);
 
   //fire all three at "highway to hell"
@@ -189,14 +190,14 @@ void winFire() {
 
 void winCheese() {
   // orange
-  setStripColor(255, 36, 0, 0);
+  setBoxColor(255, 36, 0, 0);
   fireOff();
   waitForCommand(CMD_DONE);
 }
 
 void winPinchy() {
   // Red
-  setStripColor(255, 0, 0, 0);
+  setBoxColor(255, 0, 0, 0);
   // fire all 4
   fireAll();
   waitForCommand(CMD_DONE);
@@ -227,7 +228,7 @@ void winJackpot() {
 
 // Fail, dim lights
 void loss() {
-  setStripColor(0, 0, 0, 10);
+  setBoxColor(0, 0, 0, 10);
   Serial.write(CMD_DONE);
   waitForCommand(CMD_DONE);
 }
@@ -239,7 +240,7 @@ void resetState(){
   
   // reset LEDs
   //TODO: since this is rgbw try (0,0,0,255) here?
-  setStripColor(0, 0, 0, 50);
+  setBoxColor(0, 0, 0, 50);
 
   // Make sure fire is off
   fireOff();
@@ -286,8 +287,17 @@ void fireOff(){
 
 /* LIGHTS */
 // Sets the LED strip all to one colour
-void setStripColor(int r, int g, int b, int w){
-  for (int i = 0; i < strip.numPixels(); i++) {
+void setBoxColor(int r, int g, int b, int w){
+  for (int i = COIN_PIXELS; i < strip.numPixels(); i++) {
+    strip.setPixelColor(i, r, g, b, w);
+  }
+
+  strip.show();
+}
+
+// Sets the LED strip all to one colour
+void setCoinLightColor(int r, int g, int b, int w){
+  for (int i = COIN_PIXELS; i < strip.numPixels(); i++) {
     strip.setPixelColor(i, r, g, b, w);
   }
 
@@ -358,3 +368,5 @@ void doCoin(){
   coinServo.write(90);
   delay(15);
 }
+
+void setBoxC
