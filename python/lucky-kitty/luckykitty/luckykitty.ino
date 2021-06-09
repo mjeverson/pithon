@@ -24,7 +24,8 @@ int sols[NUM_SOLS] = {SOL1, SOL2, SOL3, SOL4};
 #define TENTACLE_SERVO 9
 #define COIN_SERVO 10
 #define PIXEL 23
-#define NUM_PIXELS 90
+#define BOX_PIXELS 59 // this is how many pixels are in the box
+#define COIN_PIXELS 10 // this is how many pixels on the strip are on the coin dispenser
 
 #define WIN_NYAN 0x00
 #define WIN_TENTACLE 0x01
@@ -36,7 +37,7 @@ int sols[NUM_SOLS] = {SOL1, SOL2, SOL3, SOL4};
 #define CMD_LOSS 0x07
 #define CMD_DONE 0x09
 
-Adafruit_NeoPixel strip = Adafruit_NeoPixel(NUM_PIXELS, PIXEL, NEO_GRBW + NEO_KHZ800);
+Adafruit_NeoPixel strip = Adafruit_NeoPixel(BOX_PIXELS, PIXEL, NEO_GRBW + NEO_KHZ800);
 PWMServo tentacleServo;
 PWMServo coinServo;  
 
