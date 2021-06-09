@@ -152,6 +152,7 @@ void winTentacle() {
 void winCoin() {
   // yellow
   setBoxColor(255, 255, 0, 0);
+  setCoinLightColor(255, 255, 0, 0);
   delay(500);
   doCoin();
   
@@ -216,9 +217,10 @@ void winJackpot() {
   waitForCommand(CMD_DONE);
 
   threads.kill(lightThreadId);
+  setCoinLightColor(255, 255, 0, 0);
 
-  // dispense 5 coins
-  for(int i = 0; i < 5; i++){
+  // dispense 3 coins
+  for(int i = 0; i < 3; i++){
     delay(500);
     doCoin();
   }
@@ -239,8 +241,8 @@ void resetState(){
   coinServo.write(90);
   
   // reset LEDs
-  //TODO: since this is rgbw try (0,0,0,255) here?
   setBoxColor(0, 0, 0, 50);
+  setCoinLightColor(0, 0, 0, 0);
 
   // Make sure fire is off
   fireOff();
@@ -286,7 +288,7 @@ void fireOff(){
 }
 
 /* LIGHTS */
-// Sets the LED strip all to one colour
+// Sets the LED strip around the box all to one colour
 void setBoxColor(int r, int g, int b, int w){
   for (int i = COIN_PIXELS; i < strip.numPixels(); i++) {
     strip.setPixelColor(i, r, g, b, w);
@@ -295,9 +297,9 @@ void setBoxColor(int r, int g, int b, int w){
   strip.show();
 }
 
-// Sets the LED strip all to one colour
+// Sets the LED strip for the coin display all to one colour
 void setCoinLightColor(int r, int g, int b, int w){
-  for (int i = COIN_PIXELS; i < strip.numPixels(); i++) {
+  for (int i = 0; i < COIN_PIXELS; i++) {
     strip.setPixelColor(i, r, g, b, w);
   }
 
@@ -314,7 +316,7 @@ void rainbowCycleThread() {
       j = 0;
     }
 
-    for(i=0; i< strip.numPixels(); i++) {
+    for(i=COIN_PIXELS; i< strip.numPixels(); i++) {
       strip.setPixelColor(i, Wheel(((i * 256 / strip.numPixels()) + j) & 255));
     }
     
@@ -368,5 +370,3 @@ void doCoin(){
   coinServo.write(90);
   delay(15);
 }
-
-void setBoxC
