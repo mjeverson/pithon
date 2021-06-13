@@ -25,7 +25,7 @@ int sols[NUM_SOLS] = {SOL1, SOL2, SOL3, SOL4};
 #define COIN_SERVO 10
 #define PIXEL 23
 #define BOX_PIXELS 59 // this is how many pixels are in the box
-#define COIN_PIXELS 10 // this is how many pixels on the strip are on the coin dispenser
+#define COIN_PIXELS 5 // this is how many pixels on the strip are on the coin dispenser
 
 #define WIN_NYAN 0x00
 #define WIN_TENTACLE 0x01
