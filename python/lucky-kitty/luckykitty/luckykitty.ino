@@ -37,8 +37,7 @@ int sols[NUM_SOLS] = {SOL1, SOL2, SOL3, SOL4};
 #define CMD_LOSS 0x07
 #define CMD_DONE 0x09
 
-//todo(mje): BOX_PIXELS + COIN_PIXELS
-Adafruit_NeoPixel strip = Adafruit_NeoPixel(BOX_PIXELS, PIXEL, NEO_GRBW + NEO_KHZ800);
+Adafruit_NeoPixel strip = Adafruit_NeoPixel(BOX_PIXELS + COIN_PIXELS, PIXEL, NEO_GRBW + NEO_KHZ800);
 PWMServo tentacleServo;
 PWMServo coinServo;  
 
