@@ -27,13 +27,13 @@ class Game:
         self.forcewin = fw
         
         self.screen = screen
-        self.xoffsets = [0, 214, 428]#[36, 165, 295]
+        self.xoffsets = [0, 214, 428]
         self.yoffsets = [0, 160, 320]
         # COMMENT OUT ON OSX FOR TESTING
         if not self.debug:
             self.handle = Button(4)
         
-        self.bsound = pygame.mixer.Sound("data/sounds/CLICK10A.WAV")
+        self.bsound = pygame.mixer.Sound("_assets/_sounds/CLICK10A.WAV")
         self.oneup = pygame.mixer.Sound("_assets/_sounds/1up16.wav")
         self.cheesy = pygame.mixer.Sound("_assets/_sounds/cheesy16.wav")
         self.coin = pygame.mixer.Sound("_assets/_sounds/coin16.wav")
@@ -61,7 +61,7 @@ class Game:
         self.cmdLoss = b'\x07'
         self.cmdDone = b'\x09'
         
-        self.rlayer = pygame.image.load("data/img/rlayer.png")
+#         self.rlayer = pygame.image.load("data/img/rlayer.png")
 # Maybe change this to just be the one black line across
 #         self.windowlayer = pygame.image.load("data/img/windowlayer.png")
         self.imgpaths = ["_assets/_images/0004_nyan.png", "_assets/_images/0002_tentacle.png", "_assets/_images/0007_coin.png", "_assets/_images/0006_fireflower.png", "_assets/_images/0008_cheese-ball.png", "_assets/_images/0003_pinchy.png", "_assets/_images/0005_lucky-kitty.png", "_assets/_images/0000_bast.png", "_assets/_images/0001_poutine.png"]
