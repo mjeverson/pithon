@@ -27,8 +27,8 @@ class Game:
         self.forcewin = fw
         
         self.screen = screen
-        self.xoffsets = [120, 250, 380]#[36, 165, 295]
-        self.yoffsets = [46, 174, 302]
+        self.xoffsets = [0, 213, 426]#[36, 165, 295]
+        self.yoffsets = [0, 160, 320]
         # COMMENT OUT ON OSX FOR TESTING
         if not self.debug:
             self.handle = Button(4)
@@ -45,6 +45,8 @@ class Game:
         self.rstop = pygame.mixer.Sound("_assets/_sounds/rstop16.wav")
         self.scream = pygame.mixer.Sound("_assets/_sounds/scream16.wav")
         self.jackpot = pygame.mixer.Sound("_assets/_sounds/nyan16.wav")
+        self.bast = pygame.mixer.Sound("_assets/_sounds/bast.wav")
+        self.poutine = pygame.mixer.Sound("_assets/_sounds/poutine.wav")
 #         self.background = pygame.image.load("data/img/bg.png")
         
         self.winNyan = b'\x00'
@@ -54,13 +56,15 @@ class Game:
         self.winCheese = b'\x04'
         self.winPinchy = b'\x05'
         self.winJackpot = b'\x06'
+        self.winBast = b'\x20'
+        self.winPoutine = b'\x21'
         self.cmdLoss = b'\x07'
         self.cmdDone = b'\x09'
         
         self.rlayer = pygame.image.load("data/img/rlayer.png")
 # Maybe change this to just be the one black line across
 #         self.windowlayer = pygame.image.load("data/img/windowlayer.png")
-        self.imgpaths = ["_assets/_images/png/nyanf.png", "_assets/_images/png/tentf.png", "_assets/_images/png/coinf.png", "_assets/_images/png/firef.png", "_assets/_images/png/cheesef.png", "_assets/_images/png/pinchyf.png", "_assets/_images/png/luckycat.png"]
+        self.imgpaths = ["_assets/_images/0004_nyan.png", "_assets/_images/0002_tentacle.png", "_assets/_images/0007_coin.png", "_assets/_images/0006_fireflower.png", "_assets/_images/0008_cheese-ball.png", "_assets/_images/0003_pinchy.png", "_assets/_images/0005_lucky-kitty.png", "_assets/_images/0000_bast.png", "_assets/_images/0001_poutine.png"]
         self.imgnyan = pygame.image.load(self.imgpaths[0])
         self.imgtent = pygame.image.load(self.imgpaths[1])
         self.imgcoin = pygame.image.load(self.imgpaths[2])
@@ -68,8 +72,10 @@ class Game:
         self.imgcheese = pygame.image.load(self.imgpaths[4])
         self.imgpinchy = pygame.image.load(self.imgpaths[5])
         self.imgjackpot = pygame.image.load(self.imgpaths[6])
+        self.imgbast = pygame.image.load(self.imgpaths[7])
+        self.imgpoutine = pygame.image.load(self.imgpaths[8])
         
-        self.img = [self.imgnyan, self.imgtent, self.imgcoin, self.imgfire, self.imgcheese, self.imgpinchy, self.imgjackpot]
+        self.img = [self.imgnyan, self.imgtent, self.imgcoin, self.imgfire, self.imgcheese, self.imgpinchy, self.imgjackpot, self.imgbast, self.imgpoutine]
 
         # Randomize and update the images without actually doing the roll 
         self.randi()
@@ -236,6 +242,10 @@ class Game:
             outcome = self.imgpaths[5]
         elif 44 <= rand <= 50:
             outcome = self.imgpaths[6]
+        elif 51 <= rand <= 57:
+            outcome = self.imgpaths[7]
+        elif 58 <= rand <= 65:
+            outcome = self.imgpaths[8]
         
         #DEBUG: Uncomment this line and comment the rest to test a specific outcome
         if self.forcewin is not None:
@@ -260,7 +270,7 @@ class Game:
     # Checks if any of your lines have won
     def check(self):
         if self.show[1] == self.show[4] == self.show[7]:
-            pygame.draw.line(self.screen, [246, 226, 0], (self.xoffsets[0], 239), (self.xoffsets[2] + 128, 239), 8)
+            pygame.draw.line(self.screen, [255, 20, 147], (self.xoffsets[0], 239), (self.xoffsets[2] + 213, 239), 8)
             self.wins = self.show[1]
         else:
             self.wins = None
@@ -275,7 +285,6 @@ class Game:
         print("WIN STATE:")
         print(self.wins)
             
-        #Todo: Flesh out the win code to match the arduino (send-receive-send-receive stuff)
         if not self.debug:
             if self.wins is not None:
                 index = self.imgpaths.index(self.wins)
@@ -325,6 +334,17 @@ class Game:
                         pass
 
                     self.sendandwait(self.cmdDone)
+                #todo(mje): WHAT DO FOR THESE TWO
+                elif index == 7:
+                    print("PLAYING BAST")
+                    self.bast.play()
+                    self.sendandwait(self.winBast)
+                    self.sendandwait(self.cmdDone)
+                elif index == 8:
+                    self.poutine.play()
+                    self.sendandwait(self.winPoutine)
+                    self.sendandwait(self.cmdDone)
+                    
             else:
                 self.loss.play()
                 self.sendandwait(self.cmdLoss)
@@ -406,7 +426,7 @@ if __name__ == "__main__":
     pygame.display.set_caption("Lucky Kitty MkII")
     pygame.mouse.set_visible(False)
     
-    # Override this to test a specific win state, 0-6
+    # Override this to test a specific win state, 0-8
     forcewin = None
     plc = Game(debug, forcewin) 
     pygame.display.update()
