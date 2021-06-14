@@ -34,6 +34,8 @@ int sols[NUM_SOLS] = {SOL1, SOL2, SOL3, SOL4};
 #define WIN_CHEESE 0x04
 #define WIN_PINCHY 0x05
 #define WIN_JACKPOT 0x06
+#define WIN_BAST 0x20
+#define WIN_POUTINE 0x21
 #define CMD_LOSS 0x07
 #define CMD_DONE 0x09
 
@@ -91,6 +93,12 @@ void loop() {
         break;
       case WIN_JACKPOT:
         winJackpot();
+        break;
+      case WIN_BAST:
+        winBast();
+        break;
+      case WIN_POUTINE:
+        winPoutine();
         break;
       case CMD_LOSS:
         loss();
@@ -224,6 +232,22 @@ void winJackpot() {
     doCoin();
   }
   
+  waitForCommand(CMD_DONE);
+}
+
+void winBast() {
+  // Red
+  setBoxColor(255, 0, 0, 0);
+  // fire all 4
+  fireAll();
+  waitForCommand(CMD_DONE);
+}
+
+void winPoutine() {
+  // Red
+  setBoxColor(255, 0, 0, 0);
+  // fire all 4
+  fireAll();
   waitForCommand(CMD_DONE);
 }
 
