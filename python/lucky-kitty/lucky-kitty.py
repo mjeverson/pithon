@@ -63,7 +63,7 @@ class Game:
         
 #         self.rlayer = pygame.image.load("data/img/rlayer.png")
 # Maybe change this to just be the one black line across
-#         self.windowlayer = pygame.image.load("data/img/windowlayer.png")
+        self.windowlayer = pygame.image.load("_assets/_images/gradient.png")
         self.imgpaths = ["_assets/_images/0004_nyan.png", "_assets/_images/0002_tentacle.png", "_assets/_images/0007_coin.png", "_assets/_images/0006_fireflower.png", "_assets/_images/0008_cheese-ball.png", "_assets/_images/0003_pinchy.png", "_assets/_images/0005_lucky-kitty.png", "_assets/_images/0000_bast.png", "_assets/_images/0001_poutine.png"]
         self.imgnyan = pygame.image.load(self.imgpaths[0])
         self.imgtent = pygame.image.load(self.imgpaths[1])
@@ -82,7 +82,7 @@ class Game:
         self.screen.fill([0, 0, 0])
 #         self.screen.blit(self.background, (0, 0))
         self.drawl()
-#         self.screen.blit(self.windowlayer, (self.xoffsets[0] - 35, 0))
+        self.screen.blit(self.windowlayer, (0, 0))
 #         self.screen.blit(self.rlayer, (self.xoffsets[0], self.yoffsets[0]))
         pygame.display.update()
         
@@ -110,7 +110,7 @@ class Game:
         #reused
 #         self.screen.blit(self.background, (0, 0))
         self.drawl()
-#         self.screen.blit(self.windowlayer, (self.xoffsets[0] - 35, 0))
+        self.screen.blit(self.windowlayer, (0, 0))
         #/reused
         pygame.display.update()
         self.winner()
@@ -203,7 +203,7 @@ class Game:
                 self.screen.blit(rollcf[len(rollcf)-2], (self.xoffsets[2], self.yoffsets[1]))
                 self.screen.blit(rollcf[len(rollcf)-1], (self.xoffsets[2], self.yoffsets[2]))
             
-#             self.screen.blit(self.windowlayer, (self.xoffsets[0] - 35, 0))
+            self.screen.blit(self.windowlayer, (0, 0))
             pygame.display.update()
             rollc = rollc - 1
         self.reel.stop()
