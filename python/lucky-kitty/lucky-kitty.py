@@ -27,7 +27,7 @@ class Game:
         self.forcewin = fw
         
         self.screen = screen
-        self.xoffsets = [0, 213, 426]#[36, 165, 295]
+        self.xoffsets = [0, 214, 428]#[36, 165, 295]
         self.yoffsets = [0, 160, 320]
         # COMMENT OUT ON OSX FOR TESTING
         if not self.debug:
