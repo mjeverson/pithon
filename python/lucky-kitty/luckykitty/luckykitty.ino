@@ -242,7 +242,14 @@ void winBast() {
   
   // fire all 4
   fireAll();
+
+  Serial.write(CMD_DONE);
   waitForCommand(CMD_DONE);
+
+  //todo(mje): So we fire all that stuff off and wait til music is done, then coin?
+  setCoinLightColor(255, 255, 0, 0);
+  delay(500);
+  doCoin();
 }
 
 void winPoutine() {
@@ -253,6 +260,11 @@ void winPoutine() {
   // fire all 4
   fireAll();
   waitForCommand(CMD_DONE);
+
+    //todo(mje): So we fire all that stuff off and wait til music is done, then coin?
+//  setCoinLightColor(255, 255, 0, 0);
+//  delay(500);
+//  doCoin();
 }
 
 // Fail, dim lights

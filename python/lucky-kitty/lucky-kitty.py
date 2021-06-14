@@ -334,17 +334,26 @@ class Game:
                         pass
 
                     self.sendandwait(self.cmdDone)
-                #todo(mje): WHAT DO FOR THESE TWO
                 elif index == 7:
-                    print("PLAYING BAST")
                     self.bast.play()
                     self.sendandwait(self.winBast)
+                    
+                    ser.write(self.cmdDone)
+                    self.coin.play()
+                    while pygame.mixer.get_busy():
+                        pass
+                    
                     self.sendandwait(self.cmdDone)
                 elif index == 8:
                     self.poutine.play()
                     self.sendandwait(self.winPoutine)
-                    self.sendandwait(self.cmdDone)
+    
+                    ser.write(self.cmdDone)
+                    self.coin.play()
+                    while pygame.mixer.get_busy():
+                        pass
                     
+                    self.sendandwait(self.cmdDone)
             else:
                 self.loss.play()
                 self.sendandwait(self.cmdLoss)
