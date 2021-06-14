@@ -236,16 +236,20 @@ void winJackpot() {
 }
 
 void winBast() {
-  // Red
+  // Red + Pink
   setBoxColor(255, 0, 0, 0);
+  setBoxColorMod(255, 0, 255, 0, 2);
+  
   // fire all 4
   fireAll();
   waitForCommand(CMD_DONE);
 }
 
 void winPoutine() {
-  // Red
-  setBoxColor(255, 0, 0, 0);
+  // Blue + White
+  setBoxColor(0, 0, 0, 125);
+  setBoxColorMod(0, 0, 255, 0, 2);
+  
   // fire all 4
   fireAll();
   waitForCommand(CMD_DONE);
@@ -311,13 +315,19 @@ void fireOff(){
 }
 
 /* LIGHTS */
-// Sets the LED strip around the box all to one colour
-void setBoxColor(int r, int g, int b, int w){
+void setBoxColorMod(int r, int g, int b, int w, int modFactor){
   for (int i = COIN_PIXELS; i < strip.numPixels(); i++) {
-    strip.setPixelColor(i, r, g, b, w);
+    if (i % modFactor == 0) {
+      strip.setPixelColor(i, r, g, b, w);
+    }
   }
 
   strip.show();
+}
+
+// Sets the LED strip around the box all to one colour
+void setBoxColor(int r, int g, int b, int w){
+  setBoxColorMod(r, g, b, w, 1);
 }
 
 // Sets the LED strip for the coin display all to one colour
