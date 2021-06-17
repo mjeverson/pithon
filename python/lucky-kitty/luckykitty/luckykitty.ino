@@ -237,14 +237,14 @@ void winJackpot() {
 
 void winBast() {
   // Red + Pink
-  setBoxColor(255, 0, 0, 0);
-  setBoxColorMod(255, 0, 255, 0, 2);
+  int lightThreadId = threads.addThread(bastCycleThread);
   
   // fire all 4
   fireAll();
 
   Serial.write(CMD_DONE);
   waitForCommand(CMD_DONE);
+  threads.kill(lightThreadId);
 
   // Fire all that stuff off and wait til music is done, then coin
   setCoinLightColor(255, 255, 0, 0);
@@ -255,14 +255,14 @@ void winBast() {
 
 void winPoutine() {
   // Blue + White
-  setBoxColor(0, 0, 0, 125);
-  setBoxColorMod(0, 0, 255, 0, 2);
+  int lightThreadId = threads.addThread(poutineCycleThread);
   
   // fire all 4
   fireAll();
 
   Serial.write(CMD_DONE);
   waitForCommand(CMD_DONE);
+  threads.kill(lightThreadId);
 
   // Fire all that stuff off and wait til music is done, then coin
   setCoinLightColor(255, 255, 0, 0);
@@ -376,6 +376,47 @@ void rainbowCycleThread() {
   }
 }
 
+// Makes the white chasing blue marquee
+void poutineCycleThread() {
+  uint16_t i;
+  uint16_t j = 0;
+
+  while(true){
+    if (j > 255){
+      j = 0;
+    }
+
+    for(i=COIN_PIXELS; i< strip.numPixels(); i++) {
+      strip.setPixelColor(i, PoutineWheel(((i * 256 / strip.numPixels()) + j) & 255));
+    }
+    
+    strip.show();
+    j += 5;
+
+    threads.delay(50);
+  }
+}
+
+// Makes the fading ping and red marquee
+void bastCycleThread() {
+  uint16_t i;
+  uint16_t j = 0;
+
+  while(true){
+    if (j > 255){
+      j = 0;
+    }
+
+    for(i=COIN_PIXELS; i< strip.numPixels(); i++) {
+      strip.setPixelColor(i, BastWheel(((i * 256 / strip.numPixels()) + j) & 255));
+    }
+    
+    strip.show();
+    j += 5;
+
+    threads.delay(50);
+  }
+}
  
 // Input a value 0 to 255 to get a color value.
 // The colours are a transition r - g - b - back to r.
@@ -388,6 +429,24 @@ uint32_t Wheel(byte WheelPos) {
   } else {
    WheelPos -= 170;
    return strip.Color(0, WheelPos * 3, 255 - WheelPos * 3);
+  }
+}
+
+uint32_t PoutineWheel(byte WheelPos) {
+  if(WheelPos < 128) {
+   return strip.Color(0, 0, 128 + WheelPos, 128 - WheelPos);
+  } else {
+   WheelPos -= 128;
+   return strip.Color(0, 0, 255 - WheelPos, 128 - WheelPos);
+  } 
+}
+
+uint32_t BastWheel(byte WheelPos) {
+  if(WheelPos < 128) {
+   return strip.Color(255, 0, WheelPos / 2);
+  } else {
+   WheelPos -= 128;
+   return strip.Color(255, 0, (128 - WheelPos) / 2);
   }
 }
 

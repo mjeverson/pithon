@@ -126,7 +126,7 @@ class Game:
         
         # toll time
         #Todo: understand what this timing actually is (higher number is longer)
-        rolla = randrange(750, 1000)
+        rolla = randrange(500, 750)
         rollb = randrange(rolla+1, rolla+5)
         rollc = randrange(rollb+1, rollb+5)
         
