@@ -124,9 +124,9 @@ class Game:
         szam = 0
         self.reel.play(loops=-1)
         
-        # toll time
+        # roll time
         #Todo: understand what this timing actually is (higher number is longer)
-        rolla = randrange(300, 500)
+        rolla = randrange(30, 50)
         rollb = randrange(rolla+1, rolla+5)
         rollc = randrange(rollb+1, rollb+5)
         
