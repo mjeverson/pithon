@@ -83,8 +83,6 @@ void setup() {
 }
 
 void loop() {
-  int lightThreadId = threads.addThread(sheraCycleThread);
-    waitForCommand(CMD_DONE);
   // wait until we get a code from the pi. 
   if (Serial.available() > 0){
     byte b = Serial.read();
@@ -627,7 +625,7 @@ void gremlinCycleThread() {
 
 void catsCycleThread() {
   uint16_t i;
-  uint16_t j = 0;
+  int16_t j = 0;
   bool reverse = false;
 
   while(true){
@@ -646,10 +644,11 @@ void catsCycleThread() {
     strip.show();
 
     if (reverse) {
-      j -= 5;
+      j -= 10;
     } else {
-      j += 5;
+      j += 10;
     }
+    Serial.println(j);
 
     threads.delay(50);
   }
@@ -698,10 +697,10 @@ uint32_t SheraWheel(byte WheelPos) {
 
 uint32_t JabbaWheel(byte WheelPos) {
   if(WheelPos < 128) {
-   return strip.Color(255, 255, 255);
+   return strip.Color(WheelPos * 2, 255, WheelPos * 2);
   } else {
    WheelPos -= 128;
-   return strip.Color((128 - WheelPos) / 2, 255, (128 - WheelPos) / 2);
+   return strip.Color((128 - WheelPos), 255, (128 - WheelPos));
   }
 }
 
@@ -716,10 +715,10 @@ uint32_t CheeseWheel(byte WheelPos) {
 
 uint32_t GremlinWheel(byte WheelPos) {
   if(WheelPos < 128) {
-   return strip.Color(255, 255, 255);
+   return strip.Color(WheelPos, WheelPos, WheelPos);
   } else {
    WheelPos -= 128;
-   return strip.Color(128 - WheelPos, (128 - WheelPos) / 2, (128 - WheelPos) / 2);
+   return strip.Color(0, WheelPos, WheelPos);
   }
 }
 

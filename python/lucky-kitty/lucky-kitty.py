@@ -30,8 +30,8 @@ class Game:
         self.xoffsets = [0, 214, 428]
         self.yoffsets = [0, 160, 320]
         # COMMENT OUT ON OSX FOR TESTING
-#         if not self.debug:
-#             self.handle = Button(4)
+        if not self.debug:
+            self.handle = Button(4)
         
         self.bsound = pygame.mixer.Sound("_assets/_sounds/CLICK10A.WAV")
         
@@ -155,8 +155,7 @@ class Game:
         # mainloop
         while True:
             # COMMENT OUT ON OSX FOR TESTING
-            #not self.debug and self.handle.is_pressed:
-            if not True:
+            if not self.debug and self.handle.is_pressed:
                 self.playgame()
                 print("Starting new round!")
             else:
@@ -425,7 +424,9 @@ class Game:
                 # Emma
                 if index == 0:
                     self.shera.play()
+                    print("sending win shera")
                     self.sendandwait(self.winShera)
+                    print("sending done")
                     self.sendandwait(self.cmdDone) 
                 elif index == 1:
                     self.nitrous.play()
@@ -489,9 +490,10 @@ class Game:
     def sendandwait(self, cmd):
         ser.write(cmd)
         #TODO(mje): Might need to make sure we're flushing our buffer whenever we send something here
+        print("Waiting for music to finish")
         while pygame.mixer.get_busy():
             pass
-        
+        print("Waiting for arduino")        
         while not (ser.in_waiting > 0):
             pass
             
@@ -545,7 +547,7 @@ if __name__ == "__main__":
         if pi:
             ser = serial.Serial('/dev/ttyACM0', 9600, timeout=5)
         else:        
-            ser = serial.Serial('/dev/tty.usbmodem85842801', 9600, timeout=5)
+            ser = serial.Serial('/dev/cu.usbmodem85842801', 9600, timeout=5)
         ser.flush()
             
     # pygame init, set display
@@ -560,6 +562,6 @@ if __name__ == "__main__":
     pygame.mouse.set_visible(False)
     
     # Override this to test a specific win state, 0-8
-    forcewin = None
+    forcewin = 0
     plc = Game(debug, forcewin) 
     pygame.display.update()
