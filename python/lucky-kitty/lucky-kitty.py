@@ -34,56 +34,122 @@ class Game:
             self.handle = Button(4)
         
         self.bsound = pygame.mixer.Sound("_assets/_sounds/CLICK10A.WAV")
+        
+        # Default
         self.oneup = pygame.mixer.Sound("_assets/_sounds/1up16.wav")
-        self.cheesy = pygame.mixer.Sound("_assets/_sounds/cheesy16.wav")
         self.coin = pygame.mixer.Sound("_assets/_sounds/coin16.wav")
-        self.hth = pygame.mixer.Sound("_assets/_sounds/hth16.wav")
         self.loss = pygame.mixer.Sound("_assets/_sounds/loss16.wav")
-        self.nyan = pygame.mixer.Sound("_assets/_sounds/nyan16.wav")
-        self.pinchy = pygame.mixer.Sound("_assets/_sounds/pinchy16.wav")
         self.reel = pygame.mixer.Sound("_assets/_sounds/reel16.wav")
         self.rstop = pygame.mixer.Sound("_assets/_sounds/rstop16.wav")
-        self.scream = pygame.mixer.Sound("_assets/_sounds/scream16.wav")
-        self.jackpot = pygame.mixer.Sound("_assets/_sounds/nyan16.wav")
+        
+#         self.cheesy = pygame.mixer.Sound("_assets/_sounds/cheesy16.wav")
+#         self.hth = pygame.mixer.Sound("_assets/_sounds/hth16.wav")
+#         self.nyan = pygame.mixer.Sound("_assets/_sounds/nyan16.wav")
+#         self.pinchy = pygame.mixer.Sound("_assets/_sounds/pinchy16.wav")
+#         self.scream = pygame.mixer.Sound("_assets/_sounds/scream16.wav")
+#         self.jackpot = pygame.mixer.Sound("_assets/_sounds/nyan16.wav")
+        
+        # Arno
         self.bast = pygame.mixer.Sound("_assets/_sounds/bast.wav")
         self.poutine = pygame.mixer.Sound("_assets/_sounds/poutine.wav")
-#         self.background = pygame.image.load("data/img/bg.png")
         
-        self.winNyan = b'\x00'
-        self.winTentacle = b'\x01'
-        self.winCoin = b'\x02'
-        self.winFire = b'\x03'
-        self.winCheese = b'\x04'
-        self.winPinchy = b'\x05'
-        self.winJackpot = b'\x06'
-        self.winBast = b'\x20'
-        self.winPoutine = b'\x21'
+        # Emma
+        self.shera = pygame.mixer.Sound("_assets/_sounds/1up16.wav")
+        self.nitrous = pygame.mixer.Sound("_assets/_sounds/coin16.wav")
+        self.jabba = pygame.mixer.Sound("_assets/_sounds/cheesy16.wav")
+        self.cheese = pygame.mixer.Sound("_assets/_sounds/hth16.wav")
+        self.gremlin = pygame.mixer.Sound("_assets/_sounds/loss16.wav")
+        self.insurance = pygame.mixer.Sound("_assets/_sounds/nyan16.wav")
+        self.moar = pygame.mixer.Sound("_assets/_sounds/pinchy16.wav")
+        self.princess = pygame.mixer.Sound("_assets/_sounds/reel16.wav")
+        self.cats = pygame.mixer.Sound("_assets/_sounds/rstop16.wav")
+        
+        # Default
         self.cmdLoss = b'\x07'
         self.cmdDone = b'\x09'
+#         self.winNyan = b'\x00'
+#         self.winTentacle = b'\x01'
+#         self.winCoin = b'\x02'
+#         self.winFire = b'\x03'
+#         self.winCheese = b'\x04'
+#         self.winPinchy = b'\x05'
+#         self.winJackpot = b'\x06'
+
+        # Arno
+#         self.winBast = b'\x20'
+#         self.winPoutine = b'\x21'
+
+        # Emma
+        self.winShera = b'\x30'
+        self.winNitrous = b'\x31'
+        self.winJabba = b'\x32'
+        self.winCheese = b'\x33'
+        self.winGremlin = b'\x34'
+        self.winInsurance = b'\x35'
+        self.winMoar = b'\x36'
+        self.winPrincess = b'\x37'
+        self.winCats = b'\x38'
         
-#         self.rlayer = pygame.image.load("data/img/rlayer.png")
-# Maybe change this to just be the one black line across
+        # Maybe change this to just be the one black line across
         self.windowlayer = pygame.image.load("_assets/_images/gradient.png")
-        self.imgpaths = ["_assets/_images/0004_nyan.png", "_assets/_images/0002_tentacle.png", "_assets/_images/0007_coin.png", "_assets/_images/0006_fireflower.png", "_assets/_images/0008_cheese-ball.png", "_assets/_images/0003_pinchy.png", "_assets/_images/0005_lucky-kitty.png", "_assets/_images/0000_bast.png", "_assets/_images/0001_poutine.png"]
-        self.imgnyan = pygame.image.load(self.imgpaths[0])
-        self.imgtent = pygame.image.load(self.imgpaths[1])
-        self.imgcoin = pygame.image.load(self.imgpaths[2])
-        self.imgfire = pygame.image.load(self.imgpaths[3])
-        self.imgcheese = pygame.image.load(self.imgpaths[4])
-        self.imgpinchy = pygame.image.load(self.imgpaths[5])
-        self.imgjackpot = pygame.image.load(self.imgpaths[6])
-        self.imgbast = pygame.image.load(self.imgpaths[7])
-        self.imgpoutine = pygame.image.load(self.imgpaths[8])
         
-        self.img = [self.imgnyan, self.imgtent, self.imgcoin, self.imgfire, self.imgcheese, self.imgpinchy, self.imgjackpot, self.imgbast, self.imgpoutine]
+        # Default + Arno
+#         self.imgpaths = ["_assets/_images/0004_nyan.png", "_assets/_images/0002_tentacle.png", "_assets/_images/0007_coin.png", "_assets/_images/0006_fireflower.png", "_assets/_images/0008_cheese-ball.png", "_assets/_images/0003_pinchy.png", "_assets/_images/0005_lucky-kitty.png", "_assets/_images/0000_bast.png", "_assets/_images/0001_poutine.png"]
+#         self.imgnyan = pygame.image.load(self.imgpaths[0])
+#         self.imgtent = pygame.image.load(self.imgpaths[1])
+#         self.imgcoin = pygame.image.load(self.imgpaths[2])
+#         self.imgfire = pygame.image.load(self.imgpaths[3])
+#         self.imgcheese = pygame.image.load(self.imgpaths[4])
+#         self.imgpinchy = pygame.image.load(self.imgpaths[5])
+#         self.imgjackpot = pygame.image.load(self.imgpaths[6])
+#         self.imgbast = pygame.image.load(self.imgpaths[7])
+#         self.imgpoutine = pygame.image.load(self.imgpaths[8])
+
+#         self.img = [self.imgnyan,
+#                     self.imgtent,
+#                     self.imgcoin,
+#                     self.imgfire,
+#                     self.imgcheese,
+#                     self.imgpinchy,
+#                     self.imgjackpot,
+#                     self.imgbast,
+#                     self.imgpoutine]
+
+        # Emma
+        self.imgpaths = ["_assets/_images/0001_shera.png",
+                         "_assets/_images/0004_nitrous.png",
+                         "_assets/_images/0000_jabba.png",
+                         "_assets/_images/0002_cheese.png",
+                         "_assets/_images/gremlin.gif",
+                         "_assets/_images/0006_insurance.png",
+                         "_assets/_images/0007_moar.png",
+                         "_assets/_images/0005_brat.png",
+                         "_assets/_images/0003_nixnq.png"]
+        self.imgShera = pygame.image.load(self.imgpaths[0])
+        self.imgNitrous = pygame.image.load(self.imgpaths[1])
+        self.imgJabba = pygame.image.load(self.imgpaths[2])
+        self.imgCheese = pygame.image.load(self.imgpaths[3])
+        self.imgGremlin = pygame.image.load(self.imgpaths[4])
+        self.imgInsurance = pygame.image.load(self.imgpaths[5])
+        self.imgMoar = pygame.image.load(self.imgpaths[6])
+        self.imgBrat = pygame.image.load(self.imgpaths[7])
+        self.imgCats = pygame.image.load(self.imgpaths[8])
+        
+        self.img = [self.imgShera,
+                    self.imgNitrous,
+                    self.imgJabba,
+                    self.imgCheese,
+                    self.imgGremlin,
+                    self.imgInsurance,
+                    self.imgMoar,
+                    self.imgBrat,
+                    self.imgCats]
 
         # Randomize and update the images without actually doing the roll 
         self.randi()
         self.screen.fill([0, 0, 0])
-#         self.screen.blit(self.background, (0, 0))
         self.drawl()
         self.screen.blit(self.windowlayer, (0, 0))
-#         self.screen.blit(self.rlayer, (self.xoffsets[0], self.yoffsets[0]))
         pygame.display.update()
         
         # mainloop
@@ -108,7 +174,6 @@ class Game:
         self.randi()
         self.roll(self.img)
         #reused
-#         self.screen.blit(self.background, (0, 0))
         self.drawl()
         self.screen.blit(self.windowlayer, (0, 0))
         #/reused
@@ -288,17 +353,86 @@ class Game:
         if not self.debug:
             if self.wins is not None:
                 index = self.imgpaths.index(self.wins)
+                # Default + Arno
+#                 if index == 0:
+#                     self.nyan.play()
+#                     self.sendandwait(self.winNyan)
+#                     self.sendandwait(self.cmdDone) #maybe a reset instead, no need to wait?
+#                 elif index == 1:
+#                     self.scream.play()
+#                     self.sendandwait(self.winTentacle)
+#                     self.sendandwait(self.cmdDone)
+#                 elif index == 2:
+#                     self.coin.play()
+#                     self.sendandwait(self.winCoin)
+#                     self.oneup.play()
+#                     
+#                     while pygame.mixer.get_busy():
+#                         pass
+#                     
+#                     self.sendandwait(self.cmdDone)
+#                 elif index == 3:
+#                     self.hth.play()
+#                     self.sendandwait(self.winFire)
+#                     self.sendandwait(self.cmdDone)
+#                 elif index == 4:
+#                     self.cheesy.play()
+#                     self.sendandwait(self.winCheese)
+#                     self.sendandwait(self.cmdDone)
+#                 elif index == 5:
+#                     self.pinchy.play()
+#                     self.sendandwait(self.winPinchy)
+#                     self.sendandwait(self.cmdDone)
+#                 elif index == 6:
+#                     self.jackpot.play()
+#                     # Do all the lights and fire
+#                     self.sendandwait(self.winJackpot) 
+#                     
+#                     ser.write(self.cmdDone)
+#                     # play the coin sound and dispense a coin 3 times
+#                     for _ in range(3):
+#                         self.coin.play()
+#                         while pygame.mixer.get_busy():
+#                             pass
+# 
+#                     self.oneup.play()
+#                     while pygame.mixer.get_busy():
+#                         pass
+# 
+#                     self.sendandwait(self.cmdDone)
+#                 elif index == 7:
+#                     self.bast.play()
+#                     self.sendandwait(self.winBast)
+#                     
+#                     ser.write(self.cmdDone)
+#                     self.coin.play()
+#                     while pygame.mixer.get_busy():
+#                         pass
+#                     
+#                     self.sendandwait(self.cmdDone)
+#                 elif index == 8:
+#                     self.poutine.play()
+#                     self.sendandwait(self.winPoutine)
+#     
+#                     ser.write(self.cmdDone)
+#                     self.coin.play()
+#                     while pygame.mixer.get_busy():
+#                         pass
+#                     
+#                     self.sendandwait(self.cmdDone)
+
+                # Emma
                 if index == 0:
                     self.nyan.play()
-                    self.sendandwait(self.winNyan)
-                    self.sendandwait(self.cmdDone) #maybe a reset instead, no need to wait?
+                    self.sendandwait(self.winShera)
+                    self.sendandwait(self.cmdDone) 
                 elif index == 1:
                     self.scream.play()
-                    self.sendandwait(self.winTentacle)
+                    self.sendandwait(self.winNitrous)
                     self.sendandwait(self.cmdDone)
                 elif index == 2:
                     self.coin.play()
-                    self.sendandwait(self.winCoin)
+                    self.sendandwait(self.winJabba)
                     self.oneup.play()
                     
                     while pygame.mixer.get_busy():
@@ -307,20 +441,20 @@ class Game:
                     self.sendandwait(self.cmdDone)
                 elif index == 3:
                     self.hth.play()
-                    self.sendandwait(self.winFire)
+                    self.sendandwait(self.winCheese)
                     self.sendandwait(self.cmdDone)
                 elif index == 4:
                     self.cheesy.play()
-                    self.sendandwait(self.winCheese)
+                    self.sendandwait(self.winGremlin)
                     self.sendandwait(self.cmdDone)
                 elif index == 5:
                     self.pinchy.play()
-                    self.sendandwait(self.winPinchy)
+                    self.sendandwait(self.winInsurance)
                     self.sendandwait(self.cmdDone)
                 elif index == 6:
                     self.jackpot.play()
                     # Do all the lights and fire
-                    self.sendandwait(self.winJackpot) 
+                    self.sendandwait(self.winMoar) 
                     
                     ser.write(self.cmdDone)
                     # play the coin sound and dispense a coin 3 times
@@ -336,7 +470,7 @@ class Game:
                     self.sendandwait(self.cmdDone)
                 elif index == 7:
                     self.bast.play()
-                    self.sendandwait(self.winBast)
+                    self.sendandwait(self.winPrincess)
                     
                     ser.write(self.cmdDone)
                     self.coin.play()
@@ -346,7 +480,7 @@ class Game:
                     self.sendandwait(self.cmdDone)
                 elif index == 8:
                     self.poutine.play()
-                    self.sendandwait(self.winPoutine)
+                    self.sendandwait(self.winCats)
     
                     ser.write(self.cmdDone)
                     self.coin.play()
