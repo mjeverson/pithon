@@ -59,9 +59,9 @@ class Game:
         self.jabba = pygame.mixer.Sound("_assets/_sounds/cheesy16.wav")
         self.cheese = pygame.mixer.Sound("_assets/_sounds/hth16.wav")
         self.gremlin = pygame.mixer.Sound("_assets/_sounds/loss16.wav")
-        self.insurance = pygame.mixer.Sound("_assets/_sounds/nyan16.wav")
+#         self.insurance = pygame.mixer.Sound("_assets/_sounds/nyan16.wav")
         self.moar = pygame.mixer.Sound("_assets/_sounds/pinchy16.wav")
-        self.princess = pygame.mixer.Sound("_assets/_sounds/reel16.wav")
+#         self.princess = pygame.mixer.Sound("_assets/_sounds/reel16.wav")
         self.cats = pygame.mixer.Sound("_assets/_sounds/rstop16.wav")
         
         # Default
@@ -85,9 +85,9 @@ class Game:
         self.winJabba = b'\x32'
         self.winCheese = b'\x33'
         self.winGremlin = b'\x34'
-        self.winInsurance = b'\x35'
+#         self.winInsurance = b'\x35'
         self.winMoar = b'\x36'
-        self.winPrincess = b'\x37'
+#         self.winPrincess = b'\x37'
         self.winCats = b'\x38'
         
         # Maybe change this to just be the one black line across
@@ -423,38 +423,25 @@ class Game:
 
                 # Emma
                 if index == 0:
-                    self.nyan.play()
+                    self.shera.play()
                     self.sendandwait(self.winShera)
                     self.sendandwait(self.cmdDone) 
                 elif index == 1:
-                    self.scream.play()
+                    self.nitrous.play()
                     self.sendandwait(self.winNitrous)
                     self.sendandwait(self.cmdDone)
                 elif index == 2:
-                    self.coin.play()
+                    self.jabba.play()
                     self.sendandwait(self.winJabba)
-                    self.oneup.play()
-                    
-                    while pygame.mixer.get_busy():
-                        pass
-                    
                     self.sendandwait(self.cmdDone)
                 elif index == 3:
-                    self.hth.play()
+                    self.cheese.play()
                     self.sendandwait(self.winCheese)
                     self.sendandwait(self.cmdDone)
                 elif index == 4:
-                    self.cheesy.play()
-                    self.sendandwait(self.winGremlin)
-                    self.sendandwait(self.cmdDone)
-                elif index == 5:
-                    self.pinchy.play()
-                    self.sendandwait(self.winInsurance)
-                    self.sendandwait(self.cmdDone)
-                elif index == 6:
-                    self.jackpot.play()
+                    self.gremlin.play()
                     # Do all the lights and fire
-                    self.sendandwait(self.winMoar) 
+                    self.sendandwait(self.winGremlin) 
                     
                     ser.write(self.cmdDone)
                     # play the coin sound and dispense a coin 3 times
@@ -468,25 +455,27 @@ class Game:
                         pass
 
                     self.sendandwait(self.cmdDone)
-                elif index == 7:
-                    self.bast.play()
-                    self.sendandwait(self.winPrincess)
-                    
-                    ser.write(self.cmdDone)
-                    self.coin.play()
-                    while pygame.mixer.get_busy():
-                        pass
-                    
+                elif index == 5:
+                    self.loss.play()
+                    self.sendandwait(self.cmdLoss)
                     self.sendandwait(self.cmdDone)
-                elif index == 8:
-                    self.poutine.play()
-                    self.sendandwait(self.winCats)
+                elif index == 6:
+                    self.moar.play()
+                    self.sendandwait(self.winMoar)
     
                     ser.write(self.cmdDone)
                     self.coin.play()
                     while pygame.mixer.get_busy():
                         pass
                     
+                    self.sendandwait(self.cmdDone)
+                elif index == 7:
+                    self.loss.play()
+                    self.sendandwait(self.cmdLoss)
+                    self.sendandwait(self.cmdDone)
+                elif index == 8:
+                    self.cats.play()
+                    self.sendandwait(self.winCats)
                     self.sendandwait(self.cmdDone)
             else:
                 self.loss.play()
