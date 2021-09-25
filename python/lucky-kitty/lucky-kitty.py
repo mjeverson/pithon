@@ -116,15 +116,15 @@ class Game:
 #                     self.imgpoutine]
 
         # Emma
-        self.imgpaths = ["_assets/_images/0001_shera.png",
-                         "_assets/_images/0004_nitrous.png",
-                         "_assets/_images/0000_jabba.png",
-                         "_assets/_images/0002_cheese.png",
-                         "_assets/_images/gremlin.gif",
-                         "_assets/_images/0006_insurance.png",
-                         "_assets/_images/0007_moar.png",
-                         "_assets/_images/0005_brat.png",
-                         "_assets/_images/0003_nixnq.png"]
+        self.imgpaths = ["_assets/Emma Theme/Images/0001_shera.png",
+                         "_assets/Emma Theme/Images/0004_nitrous.png",
+                         "_assets/Emma Theme/Images/0000_jabba.png",
+                         "_assets/Emma Theme/Images/0002_cheese.png",
+                         "_assets/Emma Theme/Images/gremlin.gif",
+                         "_assets/Emma Theme/Images/0006_insurance.png",
+                         "_assets/Emma Theme/Images/0007_moar.png",
+                         "_assets/Emma Theme/Images/0005_brat.png",
+                         "_assets/Emma Theme/Images/0003_nixnq.png"]
         self.imgShera = pygame.image.load(self.imgpaths[0])
         self.imgNitrous = pygame.image.load(self.imgpaths[1])
         self.imgJabba = pygame.image.load(self.imgpaths[2])
@@ -350,7 +350,7 @@ class Game:
         print("WIN STATE:")
         print(self.wins)
             
-        if not self.debug:
+        if self.debug:
             if self.wins is not None:
                 index = self.imgpaths.index(self.wins)
                 # Default + Arno
