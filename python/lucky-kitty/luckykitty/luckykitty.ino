@@ -379,11 +379,11 @@ void winGremlin() {
 void winMoar() {
   // Rainbow
   int lightThreadId = threads.addThread(rainbowCycleThread);
+  Serial.write(CMD_DONE);
+  waitForCommand(CMD_DONE);
   setCoinLightColor(255, 255, 0, 0);
   delay(500);
   doCoin();
-  Serial.write(CMD_DONE);
-  waitForCommand(CMD_DONE);
   threads.kill(lightThreadId);
 }
 
