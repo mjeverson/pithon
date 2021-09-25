@@ -358,7 +358,7 @@ void winCheese() {
 void winGremlin() {
   delay(1500);
   // teal and white
-  int lightThreadId = threads.addThread(gremlinCycleThread);
+  int lightThreadId = threads.addThread(rainbowCycleThread);
   
   Serial.write(CMD_DONE);
   waitForCommand(CMD_DONE);
@@ -557,7 +557,7 @@ void sheraCycleThread() {
     }
     
     strip.show();
-    j += 5;
+    j += 10;
 
     threads.delay(50);
   }
@@ -603,25 +603,25 @@ void cheeseCycleThread() {
   }
 }
 
-void gremlinCycleThread() {
-  uint16_t i;
-  uint16_t j = 0;
-
-  while(true){
-    if (j > 255){
-      j = 0;
-    }
-
-    for(i=COIN_PIXELS; i< strip.numPixels(); i++) {
-      strip.setPixelColor(i, GremlinWheel(((i * 256 / strip.numPixels()) + j) & 255));
-    }
-    
-    strip.show();
-    j += 5;
-
-    threads.delay(50);
-  }
-}
+//void gremlinCycleThread() {
+//  uint16_t i;
+//  uint16_t j = 0;
+//
+//  while(true){
+//    if (j > 255){
+//      j = 0;
+//    }
+//
+//    for(i=COIN_PIXELS; i< strip.numPixels(); i++) {
+//      strip.setPixelColor(i, GremlinWheel(((i * 256 / strip.numPixels()) + j) & 255));
+//    }
+//    
+//    strip.show();
+//    j += 5;
+//
+//    threads.delay(50);
+//  }
+//}
 
 void catsCycleThread() {
   uint16_t i;
@@ -686,12 +686,24 @@ uint32_t BastWheel(byte WheelPos) {
   }
 }
 
+//uint32_t SheraWheel(byte WheelPos) {
+//  if(WheelPos < 128) {
+//   return strip.Color(255, 255, WheelPos);
+//  } else {
+//   WheelPos -= 128;
+//   return strip.Color(255, 255, 128 - WheelPos);
+//  }
+//}
+
 uint32_t SheraWheel(byte WheelPos) {
-  if(WheelPos < 128) {
-   return strip.Color(255, 255, WheelPos);
+  if(WheelPos < 85) {
+   return strip.Color(255, 255, WheelPos * 3);
+  } else if(WheelPos < 170) {
+   WheelPos -= 85;
+   return strip.Color(WheelPos * 3, WheelPos * 3, 0);
   } else {
-   WheelPos -= 128;
-   return strip.Color(255, 255, 128 - WheelPos);
+   WheelPos -= 170;
+   return strip.Color(WheelPos * 3, 0, 0);
   }
 }
 
