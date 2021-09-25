@@ -562,6 +562,6 @@ if __name__ == "__main__":
     pygame.mouse.set_visible(False)
     
     # Override this to test a specific win state, 0-8
-    forcewin = 3
+    forcewin = 4
     plc = Game(debug, forcewin) 
     pygame.display.update()
