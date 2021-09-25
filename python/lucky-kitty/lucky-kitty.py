@@ -120,7 +120,7 @@ class Game:
                          "_assets/Emma Theme/Images/0004_nitrous.png",
                          "_assets/Emma Theme/Images/0000_jabba.png",
                          "_assets/Emma Theme/Images/0002_cheese.png",
-                         "_assets/Emma Theme/Images/gremlin.gif",
+                         "_assets/Emma Theme/Images/gremlin.png",
                          "_assets/Emma Theme/Images/0006_insurance.png",
                          "_assets/Emma Theme/Images/0007_moar.png",
                          "_assets/Emma Theme/Images/0005_brat.png",
