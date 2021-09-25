@@ -30,8 +30,8 @@ class Game:
         self.xoffsets = [0, 214, 428]
         self.yoffsets = [0, 160, 320]
         # COMMENT OUT ON OSX FOR TESTING
-        if not self.debug:
-            self.handle = Button(4)
+#         if not self.debug:
+#             self.handle = Button(4)
         
         self.bsound = pygame.mixer.Sound("_assets/_sounds/CLICK10A.WAV")
         
@@ -54,15 +54,15 @@ class Game:
         self.poutine = pygame.mixer.Sound("_assets/_sounds/poutine.wav")
         
         # Emma
-        self.shera = pygame.mixer.Sound("_assets/_sounds/1up16.wav")
-        self.nitrous = pygame.mixer.Sound("_assets/_sounds/coin16.wav")
-        self.jabba = pygame.mixer.Sound("_assets/_sounds/cheesy16.wav")
-        self.cheese = pygame.mixer.Sound("_assets/_sounds/hth16.wav")
-        self.gremlin = pygame.mixer.Sound("_assets/_sounds/loss16.wav")
-#         self.insurance = pygame.mixer.Sound("_assets/_sounds/nyan16.wav")
-        self.moar = pygame.mixer.Sound("_assets/_sounds/pinchy16.wav")
-#         self.princess = pygame.mixer.Sound("_assets/_sounds/reel16.wav")
-        self.cats = pygame.mixer.Sound("_assets/_sounds/rstop16.wav")
+        self.shera = pygame.mixer.Sound("_assets/Emma Theme/Sounds/shera.wav")
+        self.nitrous = pygame.mixer.Sound("_assets/Emma Theme/Sounds/nitrous.wav")
+        self.jabba = pygame.mixer.Sound("_assets/Emma Theme/Sounds/jabba.wav")
+        self.cheese = pygame.mixer.Sound("_assets/Emma Theme/Sounds/cheese.wav")
+        self.gremlin = pygame.mixer.Sound("_assets/Emma Theme/Sounds/gremlin.wav")
+#         self.insurance = pygame.mixer.Sound("_assets/Emma Theme/Sounds/nyan16.wav")
+        self.moar = pygame.mixer.Sound("_assets/Emma Theme/Sounds/moar.wav")
+#         self.princess = pygame.mixer.Sound("_assets/Emma Theme/Sounds/reel16.wav")
+        self.cats = pygame.mixer.Sound("_assets/Emma Theme/Sounds/nixnq.wav")
         
         # Default
         self.cmdLoss = b'\x07'
@@ -155,7 +155,8 @@ class Game:
         # mainloop
         while True:
             # COMMENT OUT ON OSX FOR TESTING
-            if not self.debug and self.handle.is_pressed:
+            #not self.debug and self.handle.is_pressed:
+            if not True:
                 self.playgame()
                 print("Starting new round!")
             else:
@@ -350,7 +351,7 @@ class Game:
         print("WIN STATE:")
         print(self.wins)
             
-        if self.debug:
+        if not self.debug:
             if self.wins is not None:
                 index = self.imgpaths.index(self.wins)
                 # Default + Arno
@@ -544,7 +545,7 @@ if __name__ == "__main__":
         if pi:
             ser = serial.Serial('/dev/ttyACM0', 9600, timeout=5)
         else:        
-            ser = serial.Serial('/dev/cu.usbserial-A603GDYX', 9600, timeout=5)
+            ser = serial.Serial('/dev/tty.usbmodem85842801', 9600, timeout=5)
         ser.flush()
             
     # pygame init, set display
